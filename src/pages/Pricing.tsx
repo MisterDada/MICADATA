@@ -10,7 +10,6 @@ import {
   TrendingUp,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -143,9 +142,7 @@ function PricingCalculator({ mode }: { mode: BillingMode }) {
             estimate updates live.
           </p>
         </div>
-        <Badge variant={mode === 'payg' ? 'neutral' : 'trust'}>
-          {mode === 'payg' ? 'Pay-Per-Query rates' : 'Subscription + metering'}
-        </Badge>
+       
       </CardHeader>
       <CardContent className="grid gap-8 lg:grid-cols-[1.2fr_1fr]">
         {/* Controls */}
@@ -306,9 +303,7 @@ export function Pricing() {
         <GridBackdrop />
         <div className="container-enterprise relative">
           <motion.div variants={fadeUp} initial="hidden" animate="visible" className="mx-auto flex max-w-3xl flex-col items-center text-center">
-            <Badge variant="trust">
-              <span className="size-1.5 rounded-md bg-blue-600" /> Transparent · B2B & SME pricing
-            </Badge>
+            
             <h1 className="mt-5 text-balance font-display text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
               Pricing that scales with your decisions
             </h1>
@@ -350,9 +345,9 @@ export function Pricing() {
                       <span className="grid size-10 place-items-center rounded-xl border border-slate-300 bg-slate-100">
                         <Icon className="size-5 text-blue-600" />
                       </span>
-                      {tier.highlighted
+                      {/* {tier.highlighted
                         ? <Badge>Most popular</Badge>
-                        : <Badge variant="neutral">{tier.audience}</Badge>}
+                        : <Badge variant="neutral">{tier.audience}</Badge>} */}
                     </div>
                     <CardTitle className="mt-3 text-slate-900">{tier.name}</CardTitle>
                     {tier.highlighted && (
@@ -413,7 +408,6 @@ export function Pricing() {
         <div className="container-enterprise mt-16 grid gap-10 lg:grid-cols-[1fr_1.4fr]">
           <SectionHeading
             align="left"
-            eyebrow="FAQs"
             title="Answers, upfront"
             description="Billing, metering and deployment — the questions every risk, finance and compliance team asks."
             variant="neutral"

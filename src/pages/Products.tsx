@@ -17,7 +17,6 @@ import {
   TrendingUp,
   Wallet,
 } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { SectionHeading } from '@/components/shared/SectionHeading'
@@ -63,7 +62,6 @@ export function Products() {
         <GridBackdrop />
         <div className="container-enterprise relative">
           <motion.div variants={fadeUp} initial="hidden" animate="visible" className="mx-auto flex max-w-3xl flex-col items-center text-center">
-            <Badge>Product suite · 3 pillars</Badge>
             <h1 className="mt-5 text-balance font-display text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
               One integration. Every decision-grade dataset.
             </h1>
@@ -107,7 +105,6 @@ export function Products() {
                   <div className={`grid lg:grid-cols-[1.1fr_1fr] ${flip ? 'lg:[&>*:first-child]:order-2' : ''}`}>
                     <div className="p-8 sm:p-10">
                       <CardHeader className="p-0">
-                        <Badge variant={i % 2 ? 'trust' : 'default'}>{p.badge}</Badge>
                         <CardTitle className="mt-4 text-2xl text-slate-900 sm:text-3xl">{p.title}</CardTitle>
                         <p className="text-sm font-semibold text-blue-700/90">{p.tagline}</p>
                         <CardDescription className="mt-3 text-[15px]">{p.description}</CardDescription>
@@ -243,7 +240,6 @@ export function Products() {
                             <div className="rounded-xl border border-slate-200 bg-white p-4">
                               <div className="flex items-center justify-between">
                                 <span className="text-xs font-bold text-slate-900">FMCG distributor · Lagos</span>
-                                <Badge variant="trust">Low risk</Badge>
                               </div>
                               <p className="mt-2 text-xs text-slate-600">Recommended exposure limit</p>
                               <p className="font-display text-2xl font-extrabold text-slate-900">₦18.5M <span className="text-xs font-semibold text-blue-700">+12% vs last cycle</span></p>
@@ -279,7 +275,6 @@ export function Products() {
         >
           <SectionHeading
             align="left"
-            eyebrow="Cross-cutting guarantees"
             title="Enterprise-grade by default"
             variant="trust"
             className="max-w-2xl"

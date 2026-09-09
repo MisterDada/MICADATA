@@ -26,7 +26,6 @@ import {
   Zap,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { SectionHeading } from '@/components/shared/SectionHeading'
 import { GridBackdrop } from '@/components/shared/GridBackdrop'
@@ -196,10 +195,7 @@ export function Home() {
         <div className="container-enterprise relative">
           <motion.div variants={staggerParent} initial="hidden" animate="visible" className="mx-auto flex max-w-4xl flex-col items-center text-center">
             <motion.div variants={fadeUp}>
-              <Badge>
-                <span className="size-1.5 rounded-md bg-blue-600" />
-                {SITE.coverage} · {SITE.fullName}
-              </Badge>
+             
             </motion.div>
             <motion.h1
               variants={fadeUp}
@@ -245,7 +241,6 @@ export function Home() {
       <section className="relative border-t border-slate-200/80 py-20">
         <div className="container-enterprise">
           <SectionHeading
-            eyebrow="MiCA Data Layer Architecture"
             title="From raw feeds to a decision in seconds"
             description="Tap any stage to inspect it. One pipeline ingests fragmented African data and outputs decision-ready intelligence."
           />
@@ -304,10 +299,7 @@ export function Home() {
                 className="grid gap-8 rounded-3xl border border-slate-200 bg-slate-50 p-8 sm:p-10 md:grid-cols-[1.2fr_1fr]"
               >
                 <div>
-                  <Badge variant="trust">
-                    <span className="size-1.5 rounded-md bg-blue-600" />
-                    Stage {stage.step} · {stage.short}
-                  </Badge>
+                  
                   <h3 className="mt-4 font-display text-2xl font-bold text-slate-900">{stage.title}</h3>
                   <p className="mt-3 text-sm leading-relaxed text-slate-600 sm:text-[15px]">{stage.description}</p>
                   <div className="mt-5 flex flex-wrap gap-2">
@@ -376,7 +368,6 @@ export function Home() {
       <section className="border-y border-slate-200/80 bg-slate-50 py-20">
         <div className="container-enterprise">
           <SectionHeading
-            eyebrow="Who MiCA serves"
             title="One layer, four tailored value propositions"
             description="Select your segment to see exactly how MiCA-DATA plugs into your stack."
             variant="trust"
@@ -443,9 +434,7 @@ export function Home() {
             <GridBackdrop className="opacity-60" />
             <div className="relative grid items-center gap-10 lg:grid-cols-2">
               <div>
-                <Badge variant="trust">
-                  <MessageCircle className="size-3.5" /> SME Engagement · WhatsApp Financial Intelligence Bot
-                </Badge>
+               
                 <h2 className="mt-5 text-balance font-display text-3xl font-bold leading-tight text-slate-900 sm:text-4xl">
                   Cash flow, risk scores &amp; trade limits — inside WhatsApp.
                 </h2>
@@ -525,9 +514,7 @@ export function Home() {
       <section className="border-t border-slate-200/80 bg-slate-50 py-14">
         <div className="container-enterprise">
           <div className="flex flex-col items-center gap-2 text-center">
-            <Badge variant="neutral">
-              <ShieldCheck className="size-3.5" /> Trust &amp; Compliance
-            </Badge>
+            
             <h2 className="font-display text-xl font-bold text-slate-900 sm:text-2xl">Regulated data, handled like it.</h2>
           </div>
           <div className="mt-8 grid gap-4 md:grid-cols-3">
@@ -551,7 +538,7 @@ export function Home() {
       {/* ══ SOCIAL PROOF + CTA ═══════════════════════════════ */}
       <section className="py-20">
         <div className="container-enterprise">
-          <SectionHeading eyebrow="Trusted across Africa" title="Built for risk, compliance and growth teams" variant="neutral" />
+          <SectionHeading title="Built for risk, compliance and growth teams" variant="neutral" />
           <div className="mt-12 grid gap-5 md:grid-cols-3">
             {TESTIMONIALS.map((t, i) => (
               <motion.figure

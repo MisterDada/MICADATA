@@ -17,7 +17,6 @@ import {
   ShieldCheck,
   Split,
 } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { SectionHeading } from '@/components/shared/SectionHeading'
 import { GridBackdrop } from '@/components/shared/GridBackdrop'
@@ -118,10 +117,7 @@ export function About() {
             className="mx-auto flex max-w-4xl flex-col items-center text-center"
           >
             <motion.div variants={fadeUp}>
-              <Badge>
-                <span className="size-1.5 rounded-md bg-blue-600" />
-                Our mission · {SITE.coverage}
-              </Badge>
+              
             </motion.div>
             <motion.h1
               variants={fadeUp}
@@ -167,7 +163,6 @@ export function About() {
       <section className="relative py-20">
         <div className="container-enterprise">
           <SectionHeading
-            eyebrow="The core problem we solve"
             title="Africa doesn't lack data. It lacks unified, trusted data."
             description="Three structural gaps keep lenders cautious, employers slow and capital on the sidelines. We exist to close all three."
           />
@@ -197,7 +192,6 @@ export function About() {
       <section className="border-y border-slate-200/80 bg-slate-50 py-20">
         <div className="container-enterprise">
           <SectionHeading
-            eyebrow="Strategic data ecosystem & governance"
             title="Multi-source aggregation. Legally firewalled."
             description="Bureau depth, registry breadth and alternative-data signal — every record permissioned, receipted and protected by Nigerian privacy and credit-reporting law."
             variant="trust"
@@ -270,7 +264,6 @@ export function About() {
         <div className="container-enterprise">
           <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.1fr]">
             <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }}>
-              <Badge variant="neutral">{SITE.location}</Badge>
               <h2 className="mt-4 text-balance font-display text-3xl font-bold leading-[1.1] tracking-tight text-slate-900 sm:text-4xl lg:text-[2.75rem]">
                 Global reach, local intelligence
               </h2>
@@ -328,7 +321,6 @@ export function About() {
         <div className="container-enterprise grid gap-10 lg:grid-cols-[1fr_1.2fr]">
           <SectionHeading
             align="left"
-            eyebrow="Enterprise advisory"
             title="Talk to our integration team"
             description="Tell us about your verification, credit or KYB volume. We respond within one business day — pilots deploy in days, proofs-of-value in 30 days."
             variant="neutral"
