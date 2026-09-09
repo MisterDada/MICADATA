@@ -10,16 +10,19 @@ import { NotFound } from '@/pages/NotFound'
  * MiCA-DATA — central router.
  * Strictly 4 core pages (no API docs / demo routes).
  */
-export const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <SiteLayout />,
-    children: [
-      { index: true, element: <Home /> },
-      { path: 'products', element: <Products /> },
-      { path: 'pricing', element: <Pricing /> },
-      { path: 'about', element: <About /> },
-      { path: '*', element: <NotFound /> },
-    ],
-  },
-])
+export const router = createBrowserRouter(
+  [
+    {
+      path: '/',
+      element: <SiteLayout />,
+      children: [
+        { index: true, element: <Home /> },
+        { path: 'products', element: <Products /> },
+        { path: 'pricing', element: <Pricing /> },
+        { path: 'about', element: <About /> },
+        { path: '*', element: <NotFound /> },
+      ],
+    },
+  ],
+  { basename: import.meta.env.BASE_URL },
+)

@@ -5,6 +5,7 @@ import path from 'node:path'
 // MiCA-DATA — global Vite configuration
 export default defineConfig({
   plugins: [react()],
+  base: process.env.NODE_ENV === 'production' ? '/MICADATA/' : '/',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
