@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
 import {
   ArrowRight,
   ArrowUpRight,
@@ -18,11 +17,9 @@ import {
   Wallet,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { SectionHeading } from '@/components/shared/SectionHeading'
+import { Reveal } from '@/components/shared/Reveal'
 import { GridBackdrop } from '@/components/shared/GridBackdrop'
 import { PRODUCT_PILLARS } from '@/lib/site'
-import { fadeUp, staggerParent } from '@/lib/motion'
 
 const ICONS = { Gauge, Fingerprint, ShieldCheck, Building2 } as const
 
@@ -54,258 +51,248 @@ const TRADE_STEPS = [
   { step: '03', title: 'Monitor', text: 'Continuous re-underwriting as orders, payments and filings change.' },
 ]
 
+const INDEX = ['01', '02', '03']
+
+function ScoreMock() {
+  return (
+    <div>
+      <div className="grid gap-4 sm:grid-cols-3">
+        {TRIANGULATION.map((t) => (
+          <div key={t.label} className="rounded-3xl border border-white/10 bg-white/5 p-6 text-center">
+            <t.icon className="mx-auto size-5 text-white/60" />
+            <p className="mt-3 text-[15px] font-semibold text-white">{t.label}</p>
+            <p className="mt-1 text-sm text-white/40">{t.detail}</p>
+          </div>
+        ))}
+      </div>
+      <div className="mt-4 rounded-3xl border border-white/10 bg-white/5 p-8 sm:p-10">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-white/40">ScoreEngine™</p>
+            <p className="mt-3 font-display text-7xl font-semibold tracking-tight text-white sm:text-8xl">
+              742<span className="text-2xl font-normal text-white/40"> / 850</span>
+            </p>
+          </div>
+          <span className="inline-flex items-center gap-1.5 text-sm font-medium text-[#059669]">
+            <span className="size-1.5 rounded-full bg-[#059669]" /> Verified · Prime
+          </span>
+        </div>
+        <div className="mt-6 h-2 overflow-hidden rounded-full bg-white/10">
+          <div className="h-full w-[87%] rounded-full bg-[#0066CC]" />
+        </div>
+        <p className="mt-5 font-mono text-[13px] text-white/40">Registry match · consent receipt #8F31 · fully explainable</p>
+      </div>
+      <div className="mt-4 grid gap-4 sm:grid-cols-2">
+        {SCORE_FEATURES.map((f) => (
+          <div key={f.title} className="rounded-3xl border border-white/10 bg-white/5 p-6">
+            <f.icon className="size-5 text-white/60" />
+            <p className="mt-3 text-[15px] font-semibold text-white">{f.title}</p>
+            <p className="mt-1 text-sm leading-relaxed text-[#86868B]">{f.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function VerifyMock() {
+  return (
+    <div>
+      <div className="rounded-3xl border border-white/10 bg-white/5 p-8 sm:p-10">
+        {VERIFY_ROWS.map((r) => (
+          <div key={r.title} className="flex items-start gap-4 border-t border-white/10 py-5 first:border-t-0 first:pt-0 last:pb-0">
+            <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-white/5">
+              <r.icon className="size-4 text-white/70" />
+            </span>
+            <span className="flex-1">
+              <span className="flex items-center justify-between gap-3 text-[15px] font-semibold text-white">
+                {r.title}
+                <CheckCircle2 className="size-4 shrink-0 text-[#059669]" />
+              </span>
+              <span className="mt-1 block text-sm leading-relaxed text-[#86868B]">{r.text}</span>
+            </span>
+          </div>
+        ))}
+      </div>
+      <div className="mt-4 flex flex-wrap gap-2">
+        {CROSS_BORDER.map((c) => (
+          <span key={c} className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[13px] font-medium text-white/70">
+            <Globe2 className="size-3.5" /> {c}
+          </span>
+        ))}
+      </div>
+      <p className="mt-5 font-mono text-[13px] text-white/40">Report sealed · latency 1.4s · audit #VFA-2204</p>
+    </div>
+  )
+}
+
+function TradeMock() {
+  return (
+    <div className="grid gap-4 lg:grid-cols-2">
+      <div className="rounded-3xl border border-white/10 bg-white/5 p-8 sm:p-10">
+        <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-white/40">FMCG distributor · Lagos</p>
+        <p className="mt-5 text-sm text-[#86868B]">Recommended exposure limit</p>
+        <p className="mt-2 font-display text-6xl font-semibold tracking-tight text-white sm:text-7xl">₦18.5M</p>
+        <p className="mt-2 text-sm font-medium text-[#059669]">+12% vs last cycle · Low risk</p>
+        <div className="mt-6 h-2 overflow-hidden rounded-full bg-white/10">
+          <div className="h-full w-[72%] rounded-full bg-[#0066CC]" />
+        </div>
+        <div className="mt-8 flex flex-col border-t border-white/10">
+          {TRADE_STEPS.map((s) => (
+            <div key={s.step} className="flex gap-4 border-b border-white/10 py-4">
+              <span className="font-display text-xs font-semibold tracking-[0.2em] text-[#2f8cff]">{s.step}</span>
+              <span>
+                <span className="block text-[15px] font-semibold text-white">{s.title}</span>
+                <span className="mt-0.5 block text-sm text-[#86868B]">{s.text}</span>
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="flex flex-col justify-center rounded-3xl border border-white/10 bg-white/5 p-8 sm:p-10">
+        <p className="inline-flex items-center gap-2 text-[15px] font-semibold text-white">
+          <ScanLine className="size-4 text-white/60" /> OCR Engine → iXBRL
+        </p>
+        <p className="mt-4 font-mono text-[13px] leading-relaxed text-white/40">
+          <span className="text-white/70">&lt;ix:nonNumeric name=&quot;ifrs:Revenue&quot;</span> … 482,000,000
+          <span className="text-white/70"> /&gt;</span>
+        </p>
+        <p className="mt-4 inline-flex items-center gap-1.5 text-sm text-[#86868B]">
+          <FileScan className="size-4 text-[#059669]" /> 34 pages extracted · 99.1% field confidence
+        </p>
+        <p className="mt-6 border-t border-white/10 pt-6 text-sm leading-relaxed text-[#86868B]">
+          Built for FMCG distributors and B2B vendors — every limit ships with reason codes and an audit trail.
+        </p>
+      </div>
+    </div>
+  )
+}
+
+const MOCKS = [ScoreMock, VerifyMock, TradeMock]
+
 export function Products() {
   return (
-    <div className="bg-white">
+    <div className="bg-black">
       {/* ── HERO ── */}
-      <section className="relative overflow-hidden pb-14 pt-16 sm:pt-20">
+      <section className="relative overflow-hidden pb-24 pt-16 sm:pb-32 sm:pt-24">
         <GridBackdrop />
-        <div className="container-enterprise relative">
-          <motion.div variants={fadeUp} initial="hidden" animate="visible" className="mx-auto flex max-w-3xl flex-col items-center text-center">
-            <h1 className="mt-5 text-balance font-display text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
-              One integration. Every decision-grade dataset.
+        <div className="container-enterprise relative mx-auto flex max-w-4xl flex-col items-center text-center">
+          <Reveal>
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-[13px] font-medium text-white/70">
+              The platform · 3 products
+            </span>
+          </Reveal>
+          <Reveal delay={0.08}>
+            <h1 className="mt-8 text-balance font-display text-5xl font-semibold leading-[1.02] tracking-[-0.03em] text-white sm:text-7xl">
+              Three products.
+              <br />
+              <span className="text-white/40">One entity graph.</span>
             </h1>
-            <p className="mt-4 max-w-2xl text-pretty text-slate-600">
+          </Reveal>
+          <Reveal delay={0.16}>
+            <p className="mx-auto mt-7 max-w-2xl text-pretty text-lg font-normal leading-relaxed text-[#86868B] sm:text-xl">
               SME credit intelligence, trust &amp; compliance verification, and B2B trade underwriting —
-              resolved to a single entity graph and delivered through one contract.
+              resolved to a single graph, delivered through one contract.
             </p>
-            <div className="mt-7 flex flex-wrap items-center justify-center gap-2.5">
+          </Reveal>
+          <Reveal delay={0.24}>
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-2">
               {PRODUCT_PILLARS.map((p) => (
                 <a
                   key={p.id}
                   href={`#${p.id}`}
-                  className="inline-flex items-center gap-1.5 rounded-md border border-slate-300 bg-slate-100 px-4 py-2 text-[13px] font-semibold text-slate-700 transition-colors hover:border-blue-300 hover:text-blue-700"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[13px] font-medium text-white/70 transition-colors hover:border-white/25 hover:text-white"
                 >
-                  {p.badge} <ArrowUpRight className="size-3.5 text-slate-500" />
+                  {p.badge} <ArrowUpRight className="size-3.5" />
                 </a>
               ))}
             </div>
-          </motion.div>
+          </Reveal>
         </div>
       </section>
 
-      {/* ── PILLARS ── */}
-      <section className="pb-24">
-        <div className="container-enterprise flex flex-col gap-6">
-          {PRODUCT_PILLARS.map((p, i) => {
-            const Icon = ICONS[p.iconName as keyof typeof ICONS] ?? Gauge
-            const flip = i % 2 === 1
-            return (
-              <motion.div
-                key={p.id}
-                id={p.id}
-                variants={fadeUp}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: '-60px' }}
-                custom={i}
-                className="scroll-mt-24"
-              >
-                <Card className="overflow-hidden">
-                  <div className={`grid lg:grid-cols-[1.1fr_1fr] ${flip ? 'lg:[&>*:first-child]:order-2' : ''}`}>
-                    <div className="p-8 sm:p-10">
-                      <CardHeader className="p-0">
-                        <CardTitle className="mt-4 text-2xl text-slate-900 sm:text-3xl">{p.title}</CardTitle>
-                        <p className="text-sm font-semibold text-blue-700/90">{p.tagline}</p>
-                        <CardDescription className="mt-3 text-[15px]">{p.description}</CardDescription>
-                      </CardHeader>
-                      <CardContent className="p-0">
-                        <ul className="mt-6 grid gap-2.5 sm:grid-cols-2">
-                          {p.capabilities.map((c) => (
-                            <li key={c} className="inline-flex items-start gap-2 text-sm text-slate-600">
-                              <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-blue-700" /> {c}
-                            </li>
-                          ))}
-                        </ul>
+      {/* ── FEATURES ── */}
+      {PRODUCT_PILLARS.map((p, i) => {
+        const Icon = ICONS[p.iconName as keyof typeof ICONS] ?? Gauge
+        const Mock = MOCKS[i % MOCKS.length]
+        return (
+          <section key={p.id} id={p.id} className="scroll-mt-28 border-t border-white/10 py-28 sm:py-36">
+            <div className="container-enterprise">
+              <Reveal>
+                <div className="flex items-center gap-4">
+                  <span className="grid size-11 place-items-center rounded-2xl bg-[#0066CC]">
+                    <Icon className="size-5 text-white" />
+                  </span>
+                  <p className="font-display text-sm font-semibold tracking-[0.2em] text-white/40">
+                    {INDEX[i]} · {p.badge.toUpperCase()}
+                  </p>
+                </div>
+                <h2 className="mt-8 max-w-4xl text-balance font-display text-4xl font-semibold leading-[1.03] tracking-[-0.02em] text-white sm:text-6xl">
+                  {p.title}
+                </h2>
+                <p className="mt-5 max-w-2xl text-xl font-normal text-[#86868B] sm:text-2xl">{p.tagline}</p>
+                <p className="mt-5 max-w-3xl text-lg font-normal leading-relaxed text-[#86868B]">{p.description}</p>
+              </Reveal>
 
-                        {/* ── Pillar-specific deep dives ── */}
-                        {p.id === 'sme-datahub' && (
-                          <div className="mt-7 grid gap-3 sm:grid-cols-2">
-                            {SCORE_FEATURES.map((f) => (
-                              <div key={f.title} className="rounded-xl border border-slate-200 bg-white p-4">
-                                <f.icon className="size-5 text-blue-600" />
-                                <p className="mt-2 text-[13px] font-bold text-slate-900">{f.title}</p>
-                                <p className="mt-1 text-[13px] leading-relaxed text-slate-600">{f.text}</p>
-                              </div>
-                            ))}
-                          </div>
-                        )}
+              <Reveal delay={0.08}>
+                <div className="mt-10 grid gap-x-12 sm:grid-cols-2">
+                  {p.capabilities.map((c) => (
+                    <p key={c} className="border-t border-white/10 py-3.5 text-[15px] text-white/80">
+                      {c}
+                    </p>
+                  ))}
+                </div>
+              </Reveal>
 
-                        {p.id === 'verify-africa' && (
-                          <div className="mt-7 flex flex-col gap-3">
-                            {VERIFY_ROWS.map((r) => (
-                              <div key={r.title} className="flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-4">
-                                <span className="grid size-9 shrink-0 place-items-center rounded-lg border border-slate-300 bg-slate-100">
-                                  <r.icon className="size-4 text-blue-700" />
-                                </span>
-                                <span>
-                                  <span className="block text-[13px] font-bold text-slate-900">{r.title}</span>
-                                  <span className="mt-0.5 block text-[13px] leading-relaxed text-slate-600">{r.text}</span>
-                                </span>
-                              </div>
-                            ))}
-                            <div className="flex flex-wrap gap-2 pt-1">
-                              {CROSS_BORDER.map((c) => (
-                                <span key={c} className="inline-flex items-center gap-1.5 rounded-md border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
-                                  <Globe2 className="size-3.5" /> {c}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-
-                        {p.id === 'tradeguard' && (
-                          <div className="mt-7 grid gap-3">
-                            {TRADE_STEPS.map((s) => (
-                              <div key={s.step} className="flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-4">
-                                <span className="font-display text-xs font-bold tracking-widest text-blue-700">{s.step}</span>
-                                <span>
-                                  <span className="block text-[13px] font-bold text-slate-900">{s.title}</span>
-                                  <span className="mt-0.5 block text-[13px] leading-relaxed text-slate-600">{s.text}</span>
-                                </span>
-                              </div>
-                            ))}
-                            <p className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 text-[13px] leading-relaxed text-slate-600">
-                              Built for <span className="font-semibold text-slate-700">FMCG distributors and B2B vendors</span> — every
-                              limit recommendation ships with reason codes and an audit trail.
-                            </p>
-                          </div>
-                        )}
-
-                        <div className="mt-7 flex flex-wrap gap-3">
-                          <Button size="sm" asChild>
-                            <Link to="/pricing">Get {p.badge} <ArrowRight /></Link>
-                          </Button>
-                          <Button size="sm" variant="outline" asChild>
-                            <Link to="/about">Talk to sales</Link>
-                          </Button>
-                        </div>
-                      </CardContent>
+              <Reveal delay={0.12}>
+                <div className="mt-8 flex items-center gap-8">
+                  {p.metric && (
+                    <div>
+                      <p className="font-display text-5xl font-semibold tracking-tight text-white">{p.metric.value}</p>
+                      <p className="mt-1.5 text-sm text-[#86868B]">{p.metric.label}</p>
                     </div>
-
-                    {/* ── Visual panel ── */}
-                    <div className="relative border-t border-slate-200 bg-slate-50 p-8 sm:p-10 lg:border-l lg:border-t-0">
-                      <div className="hidden" aria-hidden="true" />
-                      <div className="relative flex h-full flex-col justify-center gap-4">
-                        <span className="grid size-12 place-items-center rounded-2xl bg-blue-600 shadow-sm">
-                          <Icon className="size-6 text-white" />
-                        </span>
-                        {p.metric && (
-                          <div>
-                            <p className="font-display text-4xl font-extrabold text-slate-900">{p.metric.value}</p>
-                            <p className="mt-1 text-sm text-slate-600">{p.metric.label}</p>
-                          </div>
-                        )}
-
-                        {p.id === 'sme-datahub' && (
-                          <div className="rounded-xl border border-slate-200 bg-white p-4">
-                            <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Triangulated entity resolution</p>
-                            <div className="mt-3 grid grid-cols-3 gap-2 text-center">
-                              {TRIANGULATION.map((t) => (
-                                <div key={t.label} className="rounded-lg border border-slate-200 bg-white p-2.5">
-                                  <t.icon className="mx-auto size-4 text-blue-600" />
-                                  <p className="mt-1.5 text-[11px] font-bold text-slate-700">{t.label}</p>
-                                  <p className="text-[10px] text-slate-500">{t.detail}</p>
-                                </div>
-                              ))}
-                            </div>
-                            <div className="mt-3 rounded-lg border border-slate-200 bg-white p-3">
-                              <div className="flex items-center justify-between">
-                                <span className="font-mono text-[11px] text-slate-500">ScoreEngine™</span>
-                                <span className="font-display text-xl font-extrabold text-blue-700">742<span className="text-xs font-semibold text-slate-500"> / 850</span></span>
-                              </div>
-                              <div className="mt-2 h-1.5 overflow-hidden rounded-md bg-slate-200">
-                                <div className="h-full w-[87%] rounded-md bg-blue-600" />
-                              </div>
-                              <p className="mt-2 font-mono text-[11px] text-slate-500">✓ verified · registry match · consent receipt #8F31…</p>
-                            </div>
-                          </div>
-                        )}
-
-                        {p.id === 'verify-africa' && (
-                          <div className="rounded-xl border border-slate-200 bg-white p-4 font-mono text-xs leading-relaxed text-slate-600">
-                            <p><span className="text-blue-700">✓ NIN match</span> · biometric 98.2%</p>
-                            <p><span className="text-blue-700">✓ WAEC</span> · certificate confirmed</p>
-                            <p><span className="text-blue-700">✓ CAC</span> · RC 1748210 · active</p>
-                            <p><span className="text-blue-700">◷ cross-border</span> · Angola / Eswatini / Qatar / US Mil. HR</p>
-                            <p className="mt-2 text-slate-500">report sealed · latency 1.4s · audit #VFA-2204</p>
-                            <div className="mt-3 h-1.5 overflow-hidden rounded-md bg-slate-200">
-                              <div className="h-full w-[92%] rounded-md bg-blue-600" />
-                            </div>
-                          </div>
-                        )}
-
-                        {p.id === 'tradeguard' && (
-                          <div className="flex flex-col gap-3">
-                            <div className="rounded-xl border border-slate-200 bg-white p-4">
-                              <div className="flex items-center justify-between">
-                                <span className="text-xs font-bold text-slate-900">FMCG distributor · Lagos</span>
-                              </div>
-                              <p className="mt-2 text-xs text-slate-600">Recommended exposure limit</p>
-                              <p className="font-display text-2xl font-extrabold text-slate-900">₦18.5M <span className="text-xs font-semibold text-blue-700">+12% vs last cycle</span></p>
-                              <div className="mt-2 h-1.5 overflow-hidden rounded-md bg-slate-200">
-                                <div className="h-full w-[72%] rounded-md bg-blue-600" />
-                              </div>
-                            </div>
-                            <div className="rounded-xl border border-slate-200 bg-white p-4">
-                              <p className="inline-flex items-center gap-2 text-xs font-bold text-slate-900"><ScanLine className="size-4 text-blue-600" /> OCR Engine → iXBRL</p>
-                              <p className="mt-1.5 font-mono text-[11px] leading-relaxed text-slate-500">
-                                <span className="text-slate-600">&lt;ix:nonNumeric name=&quot;ifrs:Revenue&quot;</span> … 482,000,000<span className="text-slate-600"> /&gt;</span><br />
-                                extracted 34 pages · 99.1% field confidence
-                              </p>
-                              <p className="mt-2 inline-flex items-center gap-1.5 text-[11px] text-slate-600"><FileScan className="size-3.5 text-blue-700" /> Financial statements auto-formatted</p>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                  )}
+                  <div className="flex flex-wrap gap-3">
+                    <Button size="sm" asChild>
+                      <Link to="/pricing">Get started</Link>
+                    </Button>
+                    <Button size="sm" variant="ghost" asChild>
+                      <Link to="/about">Talk to sales <ArrowRight /></Link>
+                    </Button>
                   </div>
-                </Card>
-              </motion.div>
-            )
-          })}
-        </div>
+                </div>
+              </Reveal>
 
-        <motion.div
-          variants={staggerParent}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="container-enterprise mt-10"
-        >
-          <SectionHeading
-            align="left"
-            title="Enterprise-grade by default"
-            variant="trust"
-            className="max-w-2xl"
-          />
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              ['Consent-first', 'Receipt on every lookup, NDPR & GDPR aligned.'],
-              ['Audit-ready', 'Immutable trails for regulators and auditors.'],
-              ['Resilient', '99.99% uptime with multi-region failover.'],
-              ['Residency controls', 'In-region hosting for central-bank mandates.'],
-            ].map(([t, d], i) => (
-              <motion.div key={t} variants={fadeUp} custom={i} className="rounded-2xl border border-slate-200 bg-white/[0.03] p-6">
-                <h3 className="font-display text-[15px] font-bold text-slate-900">{t}</h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-slate-600">{d}</p>
-              </motion.div>
-            ))}
-          </div>
-
-          <div className="relative mt-10 overflow-hidden rounded-3xl border border-slate-200 bg-blue-50 p-10 text-center sm:p-12">
-            <h3 className="mx-auto max-w-2xl text-balance font-display text-2xl font-bold text-slate-900 sm:text-3xl">
-              Plug all three pillars into one API
-            </h3>
-            <p className="mx-auto mt-3 max-w-xl text-sm text-slate-600">
-              Score an SME, verify its owners, and underwrite its trade counterparties — without stitching vendors together.
-            </p>
-            <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Button asChild><Link to="/pricing">Start pilot <ArrowRight /></Link></Button>
-              <Button variant="secondary" asChild><Link to="/about">Talk to our team</Link></Button>
+              <Reveal delay={0.1} className="mt-14">
+                <div className="rounded-[2rem] border border-white/10 bg-neutral-900/60 p-6 backdrop-blur-xl sm:p-10">
+                  <Mock />
+                </div>
+              </Reveal>
             </div>
-          </div>
-        </motion.div>
+          </section>
+        )
+      })}
+
+      {/* ── CLOSE ── */}
+      <section className="border-t border-white/10 py-28 sm:py-36">
+        <div className="container-enterprise mx-auto flex max-w-3xl flex-col items-center text-center">
+          <Reveal>
+            <h2 className="text-balance font-display text-4xl font-semibold leading-[1.03] tracking-[-0.02em] text-white sm:text-6xl">
+              Plug all three into one API.
+            </h2>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <p className="mx-auto mt-6 max-w-xl text-lg font-normal text-[#86868B]">
+              Score an SME, verify its owners, and underwrite its counterparties — without stitching vendors together.
+            </p>
+          </Reveal>
+          <Reveal delay={0.18}>
+            <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row">
+              <Button size="lg" asChild><Link to="/pricing">Start pilot</Link></Button>
+              <Button size="lg" variant="secondary" asChild><Link to="/about">Talk to our team</Link></Button>
+            </div>
+          </Reveal>
+        </div>
       </section>
     </div>
   )

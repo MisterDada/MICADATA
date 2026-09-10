@@ -1,9 +1,13 @@
 import { cn } from '@/lib/utils'
 
-/** Flat light-blue wash backdrop for hero sections (no gradients). */
+/**
+ * Near-invisible ambient wash for hero sections.
+ * A single restrained sapphire aura at 7% — no saturated gradients.
+ */
 export function GridBackdrop({ className, children }: { className?: string; children?: React.ReactNode }) {
   return (
-    <div className={cn('pointer-events-none absolute inset-0 bg-blue-50/60', className)} aria-hidden="true">
+    <div className={cn('pointer-events-none absolute inset-0 overflow-hidden', className)} aria-hidden="true">
+      <div className="absolute left-1/2 top-0 h-[480px] w-[820px] max-w-none -translate-x-1/2 rounded-full bg-[#0066CC]/[0.07] blur-[120px]" />
       {children}
     </div>
   )

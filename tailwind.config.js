@@ -10,55 +10,73 @@ export default {
     },
     extend: {
       colors: {
-        // MiCA-DATA — simple white & blue theme
-        brand: {
-          DEFAULT: '#2563EB',
-          50: '#EFF6FF',
-          100: '#DBEAFE',
-          500: '#2563EB',
-          600: '#1D4ED8',
-          700: '#1E40AF',
+        // MiCA-DATA — Apple-grade industrial palette
+        // Canvas
+        canvas: '#F5F5F7',
+        titanium: '#0B0F17',
+        // Single restrained accent — Deep Sapphire Blue
+        sapphire: {
+          DEFAULT: '#0066CC',
+          ink: '#0077ED',
+          bright: '#2f8cff',
+          deep: '#004999',
         },
+        // Verified / trust indicator only
+        verified: '#059669',
+        // Type
+        primary: '#F5F5F7',
+        muted: '#86868B',
+        hairline: 'rgba(255, 255, 255, 0.1)',
+        // shadcn compatibility (dark)
         border: 'hsl(var(--border))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
-        primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
-        },
-        secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
-        },
-        accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
-        },
         card: {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
       },
       fontFamily: {
-        sans: ['Inter', 'Plus Jakarta Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        display: ['"Plus Jakarta Sans"', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        sans: [
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'SF Pro Display',
+          'Inter',
+          'Plus Jakarta Sans',
+          'ui-sans-serif',
+          'system-ui',
+          'sans-serif',
+        ],
+        display: [
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'SF Pro Display',
+          'Inter',
+          'Plus Jakarta Sans',
+          'ui-sans-serif',
+          'system-ui',
+          'sans-serif',
+        ],
       },
       boxShadow: {
-        card: '0 1px 2px rgba(15, 23, 42, 0.06), 0 12px 32px -12px rgba(15, 23, 42, 0.12)',
+        soft: '0 12px 40px rgba(0, 0, 0, 0.45)',
+        titanium:
+          '0 0 0 1px rgba(255, 255, 255, 0.22), 0 24px 70px rgba(0, 0, 0, 0.55)',
       },
       keyframes: {
         'fade-up': {
-          from: { opacity: '0', transform: 'translateY(14px)' },
+          from: { opacity: '0', transform: 'translateY(24px)' },
           to: { opacity: '1', transform: 'translateY(0)' },
         },
       },
       animation: {
-        'fade-up': 'fade-up 0.6s ease-out both',
+        'fade-up': 'fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both',
       },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
+        '4xl': '2rem',
       },
     },
   },

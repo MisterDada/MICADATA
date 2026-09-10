@@ -4,18 +4,18 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
-    --primary: 221 83% 53%;
+    --background: 0 0% 0%;
+    --foreground: 0 0% 96%;
+    --card: 0 0% 7%;
+    --card-foreground: 0 0% 96%;
+    --primary: 211 100% 40%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 214 32% 96%;
-    --secondary-foreground: 222 47% 11%;
-    --accent: 214 100% 97%;
-    --accent-foreground: 221 83% 53%;
-    --border: 214 32% 91%;
-    --radius: 0.5rem;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 96%;
+    --accent: 0 0% 10%;
+    --accent-foreground: 0 0% 96%;
+    --border: 0 0% 16%;
+    --radius: 1.25rem;
   }
 
   * {
@@ -27,13 +27,26 @@
   }
 
   body {
-    @apply bg-white text-slate-900 font-sans antialiased;
+    @apply bg-black font-sans text-[#F5F5F7] antialiased;
     font-feature-settings: 'cv11', 'ss01';
     text-rendering: optimizeLegibility;
   }
 
   ::selection {
-    background: rgba(37, 99, 235, 0.15);
+    background: rgba(0, 102, 204, 0.4);
+    color: #fff;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #000;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #26262b;
+    border-radius: 8px;
+    border: 2px solid #000;
   }
 }
 
@@ -45,6 +58,6 @@
 
 @layer utilities {
   .container-enterprise {
-    @apply mx-auto w-full max-w-7xl px-6 lg:px-8;
+    @apply mx-auto w-full max-w-6xl px-6 lg:px-8;
   }
 }

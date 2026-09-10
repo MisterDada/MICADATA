@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
 import {
   ArrowRight,
   Building2,
@@ -18,63 +17,66 @@ import {
   Split,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { SectionHeading } from '@/components/shared/SectionHeading'
+import { Reveal } from '@/components/shared/Reveal'
 import { GridBackdrop } from '@/components/shared/GridBackdrop'
-import { SITE, TRUST_SIGNALS } from '@/lib/site'
-import { fadeUp, staggerParent } from '@/lib/motion'
+import { SITE } from '@/lib/site'
 
 const PROBLEMS = [
   {
     icon: Fingerprint,
+    stat: '60%+',
     title: 'Fragmented identity records',
     text: 'Names, NINs, BVNs, voter cards and passports live in disconnected registries. A single customer can appear as three different people — or be invisible entirely.',
-    stat: '60%+',
-    statLabel: 'of records need cross-registry resolution',
   },
   {
     icon: Building2,
+    stat: '90M+',
     title: 'Unbanked SME data gaps',
     text: 'Millions of creditworthy SMEs operate outside bureau files. Without telco, trade and alternative financial streams, lenders cannot price risk — so capital stays locked out.',
-    stat: '90M+',
-    statLabel: 'African SMEs underserved by formal credit',
   },
   {
     icon: Split,
+    stat: '<2s',
     title: 'Cross-border verification bottlenecks',
-    text: 'Hiring or lending across Lagos, Nairobi and Accra means weeks of manual checks, inconsistent formats and untrusted agents. Expansion stalls at the border.',
-    stat: 'Weeks → <2s',
-    statLabel: 'from manual checks to API decisions',
+    text: 'Hiring or lending across Lagos, Nairobi and Accra means weeks of manual checks. MiCA-DATA compresses that to an API call.',
   },
+]
+
+const METRICS: Array<[string, string]> = [
+  ['$32B', 'Credit gap addressed'],
+  ['90M+', 'SMEs underserved by formal credit'],
+  ['30+', 'African markets, live registries'],
+  ['<2s', 'Median verification latency'],
 ]
 
 const SOURCES = [
   {
     icon: Landmark,
-    title: 'FirstCentral Credit Bureau data',
-    text: 'Licensed bureau tradelines, delinquency flags, and repayment histories normalised into one explainable credit profile.',
+    title: 'Licensed bureau data',
+    text: 'FirstCentral tradelines, delinquency flags and repayment histories — normalised into one explainable profile.',
   },
   {
     icon: Database,
     title: 'Public registries',
-    text: 'Corporate affairs commissions, national ID authorities, courts, voter rolls and professional licensing bodies across 30+ markets.',
+    text: 'Corporate affairs commissions, national ID authorities, courts and licensing bodies across 30+ markets.',
   },
   {
     icon: FileWarning,
-    title: 'Alternative financial streams',
-    text: 'Consented telco, banking, mobile-money, payroll and trade signals that make thin-file and no-file customers scoreable.',
+    title: 'Alternative streams',
+    text: 'Consented telco, banking, mobile-money, payroll and trade signals that make thin-file customers scoreable.',
   },
 ]
 
 const GOVERNANCE = [
   {
     icon: Lock,
-    title: 'NDPA 2023 firewall',
-    text: 'Nigeria Data Protection Act 2023 — consent capture, purpose limitation, residency controls and data-subject rights on every lookup.',
+    title: 'NDPA 2023',
+    text: 'Nigeria Data Protection Act — consent capture, purpose limitation, residency controls and data-subject rights on every lookup.',
   },
   {
     icon: Scale,
-    title: 'CRA 2017 firewall',
-    text: 'Credit Reporting Act 2017 — licensed bureau access, permissible-purpose checks and dispute-handling baked into the audit trail.',
+    title: 'CRA 2017',
+    text: 'Credit Reporting Act — licensed bureau access, permissible-purpose checks and dispute-handling in the audit trail.',
   },
 ]
 
@@ -82,19 +84,19 @@ const REACH = [
   {
     icon: Globe2,
     title: 'Global background verification',
-    text: 'Local African education, employment, criminal-record and licence data orchestrated into one auditable report that global employers and screening platforms can trust.',
+    text: 'Local education, employment, criminal-record and licence data orchestrated into one report global employers can trust.',
     points: ['Employment & education history', 'Criminal & court record search', 'Reference orchestration'],
   },
   {
     icon: Building2,
     title: 'Pan-African business intelligence',
-    text: 'Corporate registry records, beneficial ownership graphs, financials and litigation flags — resolved continent-wide so capital can diligence any SME in seconds.',
+    text: 'Registry records, ownership graphs, financials and litigation flags — any SME, diligenced in seconds.',
     points: ['Registry + UBO graphs', 'Financials & credit limits', 'Litigation & compliance flags'],
   },
 ]
 
 const inputClass =
-  'w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-500 outline-none transition-colors focus:border-blue-300 focus:ring-2 focus:ring-blue-500/20'
+  'w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/30 outline-none transition-colors [color-scheme:dark] focus:border-[#0066CC] focus:ring-2 focus:ring-[#0066CC]/30'
 
 export function About() {
   const [sent, setSent] = useState(false)
@@ -105,325 +107,289 @@ export function About() {
   }
 
   return (
-    <div className="bg-white">
-      {/* ── 1 · NARRATIVE & MISSION ─────────────────────────── */}
-      <section className="relative overflow-hidden pb-14 pt-16 sm:pt-24">
+    <div className="bg-black">
+      {/* ── STATEMENT ── */}
+      <section className="relative overflow-hidden pb-24 pt-16 sm:pb-32 sm:pt-24">
         <GridBackdrop />
-        <div className="container-enterprise relative">
-          <motion.div
-            variants={staggerParent}
-            initial="hidden"
-            animate="visible"
-            className="mx-auto flex max-w-4xl flex-col items-center text-center"
-          >
-            <motion.div variants={fadeUp}>
-              
-            </motion.div>
-            <motion.h1
-              variants={fadeUp}
-              className="mt-6 text-balance font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-6xl"
-            >
-              Building Africa&apos;s unified{' '}
-              <span className="text-blue-700">
-                data &amp; decision intelligence
-              </span>{' '}
-              infrastructure
-            </motion.h1>
-            <motion.p variants={fadeUp} className="mt-6 max-w-2xl text-pretty text-base leading-relaxed text-slate-600 sm:text-lg">
-              Identity is fragmented. Credit files are thin. Capital cannot find the businesses that deserve it.
-              MiCA-DATA bridges identity fragmentation and unlocks capital flow — one entity graph, one API,
-              every decision-grade African record resolved, verified and audit-ready.
-            </motion.p>
-            <motion.div variants={fadeUp} className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
+        <div className="container-enterprise relative mx-auto flex max-w-4xl flex-col items-center text-center">
+          <Reveal>
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-[13px] font-medium text-white/70">
+              Our mission · {SITE.coverage}
+            </span>
+          </Reveal>
+          <Reveal delay={0.08}>
+            <h1 className="mt-8 text-balance font-display text-5xl font-semibold leading-[1.02] tracking-[-0.03em] text-white sm:text-7xl">
+              Capital can&apos;t find the businesses that deserve it.
+              <br />
+              <span className="text-white/40">We fix that.</span>
+            </h1>
+          </Reveal>
+          <Reveal delay={0.16}>
+            <p className="mx-auto mt-7 max-w-2xl text-pretty text-lg font-normal leading-relaxed text-[#86868B] sm:text-xl">
+              Identity is fragmented. Credit files are thin. MiCA-DATA bridges the gap — one entity
+              graph, one API, every decision-grade African record resolved, verified and audit-ready.
+            </p>
+          </Reveal>
+          <Reveal delay={0.24}>
+            <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row">
               <Button size="lg" asChild>
-                <Link to="/products">Explore the platform <ArrowRight /></Link>
+                <Link to="/products">Explore the platform</Link>
               </Button>
               <Button size="lg" variant="secondary" asChild>
                 <a href="#contact">Talk to advisory</a>
               </Button>
-            </motion.div>
-
-            <motion.dl
-              variants={fadeUp}
-              className="mt-14 grid w-full grid-cols-2 gap-px overflow-hidden rounded-2xl border border-slate-200 bg-slate-200 lg:grid-cols-4"
-            >
-              {TRUST_SIGNALS.map((s) => (
-                <div key={s.label} className="flex flex-col items-center gap-1 bg-slate-100 px-6 py-6">
-                  <dt className="order-2 text-xs font-medium uppercase tracking-wider text-slate-500">{s.label}</dt>
-                  <dd className="order-1 font-display text-2xl font-extrabold text-slate-900 sm:text-3xl">{s.value}</dd>
-                  {s.sublabel && <span className="order-3 text-[11px] text-slate-500">{s.sublabel}</span>}
-                </div>
-              ))}
-            </motion.dl>
-          </motion.div>
+            </div>
+          </Reveal>
         </div>
       </section>
 
-      {/* ── 2 · CORE PROBLEM WE SOLVE ───────────────────────── */}
-      <section className="relative py-20">
+      {/* ── METRICS BAND (light) ── */}
+      <section className="bg-[#F5F5F7] py-20 sm:py-24">
+        <div className="container-enterprise grid grid-cols-2 gap-x-8 gap-y-12 lg:grid-cols-4">
+          {METRICS.map(([value, label], i) => (
+            <Reveal key={label} delay={i * 0.08}>
+              <div className="border-t-2 border-black/80 pt-5">
+                <p className="font-display text-5xl font-semibold tracking-tight text-black sm:text-6xl">{value}</p>
+                <p className="mt-2 text-[15px] text-black/60">{label}</p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* ── THE PROBLEM ── */}
+      <section className="py-28 sm:py-36">
         <div className="container-enterprise">
-          <SectionHeading
-            title="Africa doesn't lack data. It lacks unified, trusted data."
-            description="Three structural gaps keep lenders cautious, employers slow and capital on the sidelines. We exist to close all three."
-          />
-          <motion.div
-            variants={staggerParent}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-80px' }}
-            className="mt-12 grid gap-5 md:grid-cols-3"
-          >
+          <Reveal className="max-w-3xl">
+            <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2f8cff]">The problem</p>
+            <h2 className="mt-4 text-balance font-display text-4xl font-semibold leading-[1.05] tracking-[-0.02em] text-white sm:text-5xl">
+              Africa doesn&apos;t lack data. It lacks unified, trusted data.
+            </h2>
+          </Reveal>
+          <div className="mt-14">
             {PROBLEMS.map((p, i) => (
-              <motion.div key={p.title} variants={fadeUp} custom={i} className="flex h-full flex-col rounded-2xl border border-slate-200 bg-slate-100 p-7">
-                <span className="grid size-11 place-items-center rounded-xl border border-slate-300 bg-slate-100">
-                  <p.icon className="size-5 text-blue-600" />
-                </span>
-                <p className="mt-5 font-display text-3xl font-extrabold text-slate-900">{p.stat}</p>
-                <p className="text-[11px] font-semibold uppercase tracking-widest text-blue-700/80">{p.statLabel}</p>
-                <h3 className="mt-3 font-display text-lg font-bold text-slate-900">{p.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-slate-600">{p.text}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── 3 · DATA ECOSYSTEM & GOVERNANCE ──────────────────── */}
-      <section className="border-y border-slate-200/80 bg-slate-50 py-20">
-        <div className="container-enterprise">
-          <SectionHeading
-            title="Multi-source aggregation. Legally firewalled."
-            description="Bureau depth, registry breadth and alternative-data signal — every record permissioned, receipted and protected by Nigerian privacy and credit-reporting law."
-            variant="trust"
-          />
-
-          <motion.div
-            variants={staggerParent}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-60px' }}
-            className="mt-12 grid gap-5 lg:grid-cols-3"
-          >
-            {SOURCES.map((s, i) => (
-              <motion.div key={s.title} variants={fadeUp} custom={i} className="rounded-2xl border border-slate-200 bg-slate-50 p-7">
-                <span className="grid size-11 place-items-center rounded-xl bg-blue-600 shadow-sm">
-                  <s.icon className="size-5 text-white" />
-                </span>
-                <h3 className="mt-4 font-display text-[17px] font-bold text-slate-900">{s.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-slate-600">{s.text}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          {/* Governance firewalls */}
-          <motion.div
-            variants={staggerParent}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-60px' }}
-            className="mt-5 grid gap-5 md:grid-cols-2"
-          >
-            {GOVERNANCE.map((g, i) => (
-              <motion.div
-                key={g.title}
-                variants={fadeUp}
-                custom={i}
-                className="relative overflow-hidden rounded-2xl border border-blue-200 bg-blue-50 p-7"
-              >
-                <div className="flex items-start gap-4">
-                  <span className="grid size-11 shrink-0 place-items-center rounded-xl border border-blue-200 bg-blue-50">
-                    <g.icon className="size-5 text-blue-600" />
-                  </span>
+              <Reveal key={p.title} delay={i * 0.06}>
+                <div className="grid gap-6 border-t border-white/10 py-10 last:border-b sm:grid-cols-[auto_1fr_1.4fr] sm:items-baseline sm:gap-12">
+                  <p className="font-display text-sm font-semibold tracking-[0.2em] text-white/30">0{i + 1}</p>
                   <div>
-                    <p className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-blue-700">
-                      <ShieldCheck className="size-3.5" /> Privacy firewall
-                    </p>
-                    <h3 className="mt-1 font-display text-lg font-bold text-slate-900">{g.title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-slate-600">{g.text}</p>
+                    <p className="font-display text-4xl font-semibold tracking-tight text-white">{p.stat}</p>
+                    <h3 className="mt-2 font-display text-xl font-semibold tracking-tight text-white">{p.title}</h3>
                   </div>
+                  <p className="max-w-xl leading-relaxed text-[#86868B]">{p.text}</p>
                 </div>
-              </motion.div>
+              </Reveal>
             ))}
-          </motion.div>
-
-          <motion.p
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="mx-auto mt-8 flex max-w-3xl items-start justify-center gap-2 text-center text-[13px] leading-relaxed text-slate-500"
-          >
-            <Lock className="mt-0.5 size-4 shrink-0 text-slate-500" />
-            Consent receipt on every lookup · purpose-limited access · in-region residency controls · immutable audit trails for regulators and auditors.
-          </motion.p>
-        </div>
-      </section>
-
-      {/* ── 4 · GLOBAL REACH, LOCAL INTELLIGENCE ─────────────── */}
-      <section className="relative overflow-hidden py-20">
-        <div className="container-enterprise">
-          <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.1fr]">
-            <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }}>
-              <h2 className="mt-4 text-balance font-display text-3xl font-bold leading-[1.1] tracking-tight text-slate-900 sm:text-4xl lg:text-[2.75rem]">
-                Global reach, local intelligence
-              </h2>
-              <p className="mt-4 max-w-xl text-pretty text-[15px] leading-relaxed text-slate-600">
-                Global decisions run on local records. We do the hard work of resolving fragmented African
-                registries — so a bank in London, an employer in Dubai or a lender in Accra can verify any
-                African consumer or business with the same confidence as a domestic check.
-              </p>
-              <div className="mt-6 flex flex-wrap gap-2.5">
-                {['Lagos', 'Nairobi', 'Accra', 'Johannesburg', '+ 26 markets'].map((c) => (
-                  <span key={c} className="inline-flex items-center gap-1.5 rounded-md border border-slate-300 bg-slate-100 px-3.5 py-1.5 text-xs font-semibold text-slate-600">
-                    <Globe2 className="size-3.5 text-blue-600" /> {c}
-                  </span>
-                ))}
-              </div>
-              <div className="mt-7">
-                <Button variant="secondary" asChild>
-                  <Link to="/products">See coverage in products <ArrowRight /></Link>
-                </Button>
-              </div>
-            </motion.div>
-
-            <motion.div
-              variants={staggerParent}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: '-60px' }}
-              className="grid gap-5"
-            >
-              {REACH.map((r, i) => (
-                <motion.div key={r.title} variants={fadeUp} custom={i} className="rounded-2xl border border-slate-200 bg-slate-50 p-7">
-                  <div className="flex items-center gap-3">
-                    <span className="grid size-10 place-items-center rounded-xl border border-slate-300 bg-slate-100">
-                      <r.icon className="size-5 text-blue-600" />
-                    </span>
-                    <h3 className="font-display text-lg font-bold text-slate-900">{r.title}</h3>
-                  </div>
-                  <p className="mt-3 text-sm leading-relaxed text-slate-600">{r.text}</p>
-                  <ul className="mt-4 grid gap-2 sm:grid-cols-3">
-                    {r.points.map((pt) => (
-                      <li key={pt} className="inline-flex items-start gap-1.5 text-[13px] text-slate-600">
-                        <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-blue-700" /> {pt}
-                      </li>
-                    ))}
-                  </ul>
-                </motion.div>
-              ))}
-            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* ── 5 · ENTERPRISE CONTACT / ADVISORY FORM ───────────── */}
-      <section id="contact" className="border-t border-slate-200/80 bg-slate-50 py-20">
-        <div className="container-enterprise grid gap-10 lg:grid-cols-[1fr_1.2fr]">
-          <SectionHeading
-            align="left"
-            title="Talk to our integration team"
-            description="Tell us about your verification, credit or KYB volume. We respond within one business day — pilots deploy in days, proofs-of-value in 30 days."
-            variant="neutral"
-            className="lg:sticky lg:top-24 lg:self-start"
-          />
+      {/* ── ECOSYSTEM ── */}
+      <section className="border-t border-white/10 bg-[#0B0F17] py-28 sm:py-36">
+        <div className="container-enterprise">
+          <Reveal className="max-w-3xl">
+            <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2f8cff]">Data ecosystem</p>
+            <h2 className="mt-4 text-balance font-display text-4xl font-semibold leading-[1.05] tracking-[-0.02em] text-white sm:text-5xl">
+              Multi-source aggregation. Legally firewalled.
+            </h2>
+            <p className="mt-5 max-w-2xl text-lg font-normal leading-relaxed text-[#86868B]">
+              Bureau depth, registry breadth and alternative-data signal — every record permissioned
+              and receipted.
+            </p>
+          </Reveal>
 
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-60px' }}
-            className="rounded-3xl border border-slate-200 bg-slate-50 p-7 sm:p-9"
-          >
-            {sent ? (
-              <div className="flex min-h-[380px] flex-col items-center justify-center text-center">
-                <span className="grid size-14 place-items-center rounded-md bg-blue-50">
-                  <CheckCircle2 className="size-7 text-blue-600" />
+          <div className="mt-14 grid gap-10 md:grid-cols-3">
+            {SOURCES.map((s, i) => (
+              <Reveal key={s.title} delay={i * 0.08}>
+                <div className="border-t border-white/10 pt-6">
+                  <s.icon className="size-5 text-white/60" />
+                  <p className="mt-4 text-[15px] font-semibold text-white">{s.title}</p>
+                  <p className="mt-1.5 text-sm leading-relaxed text-[#86868B]">{s.text}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+
+          <div className="mt-14 grid gap-4 md:grid-cols-2">
+            {GOVERNANCE.map((g, i) => (
+              <Reveal key={g.title} delay={i * 0.08}>
+                <div className="rounded-[1.75rem] border border-white/10 bg-neutral-900/60 p-8 backdrop-blur-xl">
+                  <div className="flex items-start gap-4">
+                    <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-white/5">
+                      <g.icon className="size-5 text-white/70" />
+                    </span>
+                    <div>
+                      <p className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#2f8cff]">
+                        <ShieldCheck className="size-3.5" /> Privacy firewall
+                      </p>
+                      <h3 className="mt-1.5 font-display text-lg font-semibold tracking-tight text-white">{g.title}</h3>
+                      <p className="mt-2 text-sm leading-relaxed text-[#86868B]">{g.text}</p>
+                    </div>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── REACH ── */}
+      <section className="border-t border-white/10 py-28 sm:py-36">
+        <div className="container-enterprise grid items-start gap-14 lg:grid-cols-[1fr_1.1fr] lg:gap-20">
+          <Reveal className="lg:sticky lg:top-32">
+            <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2f8cff]">{SITE.location}</p>
+            <h2 className="mt-4 text-balance font-display text-4xl font-semibold leading-[1.05] tracking-[-0.02em] text-white sm:text-5xl">
+              Global reach, local intelligence.
+            </h2>
+            <p className="mt-5 max-w-xl text-lg font-normal leading-relaxed text-[#86868B]">
+              A bank in London, an employer in Dubai or a lender in Accra can verify any African
+              consumer or business with the same confidence as a domestic check.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-2">
+              {['Lagos', 'Nairobi', 'Accra', 'Johannesburg', '+ 26 markets'].map((c) => (
+                <span key={c} className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[13px] font-medium text-white/70">
+                  <Globe2 className="size-3.5" /> {c}
                 </span>
-                <h3 className="mt-5 font-display text-2xl font-bold text-slate-900">Request received</h3>
-                <p className="mt-2 max-w-sm text-sm leading-relaxed text-slate-600">
-                  Thanks — our enterprise advisory team will reach out within one business day at the work
-                  email you provided. For urgent needs: {SITE.email}.
-                </p>
-                <Button variant="secondary" className="mt-6" onClick={() => setSent(false)}>
-                  Send another inquiry
-                </Button>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="grid gap-4">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div>
-                    <label htmlFor="about-name" className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-600">
-                      Full name
-                    </label>
-                    <input id="about-name" name="name" required placeholder="Adaeze Okafor" autoComplete="name" className={inputClass} />
+              ))}
+            </div>
+            <div className="mt-9">
+              <Button variant="secondary" asChild>
+                <Link to="/products">See coverage in products <ArrowRight /></Link>
+              </Button>
+            </div>
+          </Reveal>
+
+          <div className="flex flex-col gap-4">
+            {REACH.map((r, i) => (
+              <Reveal key={r.title} delay={i * 0.08}>
+                <div className="rounded-[1.75rem] border border-white/10 bg-neutral-900/60 p-8 backdrop-blur-xl">
+                  <div className="flex items-center gap-3">
+                    <span className="grid size-10 place-items-center rounded-2xl bg-white/5">
+                      <r.icon className="size-5 text-white/70" />
+                    </span>
+                    <h3 className="font-display text-lg font-semibold tracking-tight text-white">{r.title}</h3>
                   </div>
-                  <div>
-                    <label htmlFor="about-email" className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-600">
-                      Work email
-                    </label>
-                    <input id="about-email" name="email" type="email" required placeholder="you@company.com" autoComplete="email" className={inputClass} />
-                  </div>
-                </div>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div>
-                    <label htmlFor="about-company" className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-600">
-                      Company
-                    </label>
-                    <input id="about-company" name="company" required placeholder="Company / institution" autoComplete="organization" className={inputClass} />
-                  </div>
-                  <div>
-                    <label htmlFor="about-role" className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-600">
-                      Role
-                    </label>
-                    <select id="about-role" name="role" className={inputClass} defaultValue="Risk / Credit">
-                      {['Risk / Credit', 'Compliance / KYC', 'Product / Engineering', 'Operations / HR', 'Executive / Other'].map((r) => (
-                        <option key={r} value={r} className="bg-slate-50">{r}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-                <div>
-                  <label htmlFor="about-interest" className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-600">
-                    What do you need?
-                  </label>
-                  <div className="flex flex-wrap gap-2">
-                    {['Credit Intelligence', 'Identity & KYC', 'Background Checks', 'Business / KYB'].map((t, i) => (
-                      <label key={t} className="cursor-pointer">
-                        <input type="checkbox" name="interest" value={t} defaultChecked={i < 2} className="peer sr-only" />
-                        <span className="inline-flex items-center rounded-md border border-slate-300 bg-slate-100 px-3.5 py-1.5 text-xs font-semibold text-slate-600 transition-all peer-checked:border-blue-300 peer-checked:bg-blue-50 peer-checked:text-blue-700">
-                          {t}
-                        </span>
-                      </label>
+                  <p className="mt-4 text-[15px] leading-relaxed text-[#86868B]">{r.text}</p>
+                  <div className="mt-5 flex flex-col border-t border-white/10">
+                    {r.points.map((pt) => (
+                      <p key={pt} className="flex items-center gap-2.5 border-b border-white/10 py-3 text-sm text-white/80">
+                        <CheckCircle2 className="size-4 shrink-0 text-[#059669]" /> {pt}
+                      </p>
                     ))}
                   </div>
                 </div>
-                <div>
-                  <label htmlFor="about-message" className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-600">
-                    How can we help?
-                  </label>
-                  <textarea
-                    id="about-message"
-                    name="message"
-                    required
-                    rows={4}
-                    placeholder="Monthly verification volume, markets (e.g. NG, GH, KE), and your timeline…"
-                    className={`${inputClass} resize-none`}
-                  />
-                </div>
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                  <Button type="submit" size="lg" className="sm:flex-1">
-                    Request enterprise demo <Send />
-                  </Button>
-                  <p className="text-center text-xs text-slate-500 sm:max-w-[180px] sm:text-left">
-                    Prefer email? <a href={`mailto:${SITE.email}`} className="font-semibold text-blue-600 hover:text-blue-800">{SITE.email}</a>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CONTACT ── */}
+      <section id="contact" className="border-t border-white/10 bg-[#0B0F17] py-28 sm:py-36">
+        <div className="container-enterprise grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:gap-20">
+          <Reveal className="lg:sticky lg:top-32 lg:self-start">
+            <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2f8cff]">Enterprise advisory</p>
+            <h2 className="mt-4 text-balance font-display text-4xl font-semibold leading-[1.05] tracking-[-0.02em] text-white sm:text-5xl">
+              Talk to our integration team.
+            </h2>
+            <p className="mt-5 max-w-md text-lg font-normal leading-relaxed text-[#86868B]">
+              Tell us about your verification, credit or KYB volume. We respond within one business
+              day — pilots deploy in days, proofs-of-value in 30.
+            </p>
+          </Reveal>
+
+          <Reveal delay={0.1}>
+            <div className="rounded-[2rem] border border-white/10 bg-neutral-900/60 p-7 backdrop-blur-xl sm:p-10">
+              {sent ? (
+                <div className="flex min-h-[380px] flex-col items-center justify-center text-center">
+                  <span className="grid size-14 place-items-center rounded-full bg-[#059669]/15">
+                    <CheckCircle2 className="size-7 text-[#059669]" />
+                  </span>
+                  <h3 className="mt-6 font-display text-3xl font-semibold tracking-tight text-white">Request received.</h3>
+                  <p className="mt-3 max-w-sm text-[15px] leading-relaxed text-[#86868B]">
+                    Our enterprise advisory team will reach out within one business day. For urgent
+                    needs: {SITE.email}.
                   </p>
+                  <Button variant="secondary" className="mt-8" onClick={() => setSent(false)}>
+                    Send another inquiry
+                  </Button>
                 </div>
-                <p className="flex items-center gap-1.5 text-[11px] text-slate-500">
-                  <Lock className="size-3.5" /> Consent-first · NDPA 2023 &amp; CRA 2017 aligned · never shared.
-                </p>
-              </form>
-            )}
-          </motion.div>
+              ) : (
+                <form onSubmit={handleSubmit} className="grid gap-5">
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <div>
+                      <label htmlFor="about-name" className="mb-2 block text-xs font-semibold uppercase tracking-[0.12em] text-white/50">
+                        Full name
+                      </label>
+                      <input id="about-name" name="name" required placeholder="Adaeze Okafor" autoComplete="name" className={inputClass} />
+                    </div>
+                    <div>
+                      <label htmlFor="about-email" className="mb-2 block text-xs font-semibold uppercase tracking-[0.12em] text-white/50">
+                        Work email
+                      </label>
+                      <input id="about-email" name="email" type="email" required placeholder="you@company.com" autoComplete="email" className={inputClass} />
+                    </div>
+                  </div>
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <div>
+                      <label htmlFor="about-company" className="mb-2 block text-xs font-semibold uppercase tracking-[0.12em] text-white/50">
+                        Company
+                      </label>
+                      <input id="about-company" name="company" required placeholder="Company / institution" autoComplete="organization" className={inputClass} />
+                    </div>
+                    <div>
+                      <label htmlFor="about-role" className="mb-2 block text-xs font-semibold uppercase tracking-[0.12em] text-white/50">
+                        Role
+                      </label>
+                      <select id="about-role" name="role" className={inputClass} defaultValue="Risk / Credit">
+                        {['Risk / Credit', 'Compliance / KYC', 'Product / Engineering', 'Operations / HR', 'Executive / Other'].map((r) => (
+                          <option key={r} value={r}>{r}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.12em] text-white/50">
+                      What do you need?
+                    </span>
+                    <div className="flex flex-wrap gap-2">
+                      {['Credit Intelligence', 'Identity & KYC', 'Background Checks', 'Business / KYB'].map((t, i) => (
+                        <label key={t} className="cursor-pointer">
+                          <input type="checkbox" name="interest" value={t} defaultChecked={i < 2} className="peer sr-only" />
+                          <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[13px] font-medium text-white/60 transition-colors peer-checked:border-[#0066CC] peer-checked:bg-[#0066CC]/15 peer-checked:text-white">
+                            {t}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label htmlFor="about-message" className="mb-2 block text-xs font-semibold uppercase tracking-[0.12em] text-white/50">
+                      How can we help?
+                    </label>
+                    <textarea
+                      id="about-message"
+                      name="message"
+                      required
+                      rows={4}
+                      placeholder="Monthly verification volume, markets (e.g. NG, GH, KE), and your timeline…"
+                      className={`${inputClass} resize-none`}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                    <Button type="submit" size="lg" className="sm:flex-1">
+                      Request enterprise demo <Send />
+                    </Button>
+                    <p className="text-center text-xs leading-relaxed text-white/40 sm:max-w-[180px] sm:text-left">
+                      Prefer email? <a href={`mailto:${SITE.email}`} className="font-semibold text-[#2f8cff] hover:text-white">{SITE.email}</a>
+                    </p>
+                  </div>
+                  <p className="flex items-center gap-1.5 text-xs text-white/30">
+                    <Lock className="size-3.5" /> Consent-first · NDPA 2023 &amp; CRA 2017 aligned · never shared.
+                  </p>
+                </form>
+              )}
+            </div>
+          </Reveal>
         </div>
       </section>
     </div>

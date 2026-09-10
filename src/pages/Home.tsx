@@ -1,11 +1,9 @@
 import { useState } from 'react'
+import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
   ArrowRight,
-  ArrowUpRight,
-  Banknote,
-  Bot,
   Building2,
   CheckCircle2,
   Cpu,
@@ -13,27 +11,24 @@ import {
   FileCheck2,
   Fingerprint,
   Landmark,
-  Layers,
   LineChart,
   Lock,
   MessageCircle,
-  Network,
   ScanLine,
   ShieldCheck,
-  Sparkles,
   Store,
   Workflow,
   Zap,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
 import { SectionHeading } from '@/components/shared/SectionHeading'
 import { GridBackdrop } from '@/components/shared/GridBackdrop'
+import { Reveal } from '@/components/shared/Reveal'
 import { SITE, TESTIMONIALS, TRUST_SIGNALS } from '@/lib/site'
-import { fadeUp, staggerParent } from '@/lib/motion'
+import { EASE } from '@/lib/motion'
 import { cn } from '@/lib/utils'
 
-/* ── Data layer pipeline model ─────────────────────────────── */
+/* ── Pipeline model ──────────────────────────────────────────── */
 type PipelineStage = {
   id: string
   step: string
@@ -52,7 +47,7 @@ const PIPELINE: PipelineStage[] = [
     short: 'Ingest',
     description:
       'Multi-source intake from bureaus, registries, banks and alternative feeds — consent captured at source, every record traceable.',
-    inputs: ['Credit bureau feeds', 'Identity registries', 'Bank & POS feeds', 'Financial statements', 'Background data'],
+    inputs: ['Credit bureau feeds', 'Identity registries', 'Bank & POS feeds', 'Financial statements'],
     icon: Database,
   },
   {
@@ -88,23 +83,16 @@ const PIPELINE: PipelineStage[] = [
   {
     id: 'gateway',
     step: '05',
-    title: 'AI & Decision Intelligence Gateway',
+    title: 'Decision Intelligence Gateway',
     short: 'Decide',
     description:
-      'Automated decisioning with policy rules, AI explanations and human-in-the-loop override — returned via one REST API in under 2 seconds.',
-    inputs: ['Policy engine', 'AI explanations', 'Auto-approve / refer', 'Full audit trail'],
+      'Automated decisioning with policy rules, explanations and human-in-the-loop override — returned via one REST API in under 2 seconds.',
+    inputs: ['Policy engine', 'Explanations', 'Auto-approve / refer', 'Full audit trail'],
     icon: Cpu,
   },
 ]
 
-const OUTPUT_SEGMENTS = [
-  { label: 'Financial Institutions', icon: Landmark, text: 'Underwrite & monitor at portfolio scale.' },
-  { label: 'Corporates', icon: Building2, text: 'KYB suppliers & distributors with confidence.' },
-  { label: 'Fintechs', icon: Zap, text: 'Embed scoring via one API.' },
-  { label: 'SMEs', icon: Store, text: 'Access limits via WhatsApp.' },
-]
-
-/* ── Audience tabs ─────────────────────────────────────────── */
+/* ── Audience tabs ───────────────────────────────────────────── */
 type Audience = {
   id: string
   label: string
@@ -125,7 +113,7 @@ const AUDIENCES: Audience[] = [
     icon: Landmark,
     headline: 'Underwrite thin-file borrowers with bureau-grade confidence.',
     value:
-      'Banks, MFIs and digital lenders use MiCA-DATA to aggregate bureau, identity and cash-flow data into a single decision — cutting manual review and default rates.',
+      'Banks, MFIs and digital lenders aggregate bureau, identity and cash-flow data into a single decision — cutting manual review and default rates.',
     bullets: ['Multi-bureau credit profiles + SME ScoreEngine™', 'BVN / NIN identity resolution with liveness', 'Portfolio monitoring & early-warning triggers'],
     metric: '-38%',
     metricLabel: 'default rate in pilot portfolios',
@@ -165,7 +153,7 @@ const AUDIENCES: Audience[] = [
     headline: 'Your cash flow is your collateral — now lenders can see it.',
     value:
       'Small businesses connect POS and bank feeds once, then get a live risk score and trade-credit limit — accessible anytime via the MiCA WhatsApp bot.',
-    bullets: ['POS + bank feeds build your score automatically', 'Real-time limits via WhatsApp, no paperwork', 'Share verified profile with any lender'],
+    bullets: ['POS + bank feeds build your score automatically', 'Real-time limits via WhatsApp, no paperwork', 'Share a verified profile with any lender'],
     metric: '24hrs',
     metricLabel: 'from POS connect to first credit limit',
     cta: 'Meet the WhatsApp bot',
@@ -173,421 +161,555 @@ const AUDIENCES: Audience[] = [
   },
 ]
 
-/* ── Compliance bar ────────────────────────────────────────── */
 const COMPLIANCE = [
-  { icon: ShieldCheck, title: 'NDPA 2023 Compliant', text: 'Consent receipts & data-subject rights built into every lookup.' },
-  { icon: Lock, title: 'CRA 2017 Data Firewalls', text: 'Regulated bureau data segregated under Credit Reporting Act controls.' },
-  { icon: FileCheck2, title: 'ISO / SOC 2 Standards', text: 'Audited controls, encryption at rest & in transit, in-region hosting.' },
+  { icon: ShieldCheck, title: 'NDPA 2023', text: 'Consent receipts and data-subject rights in every lookup.' },
+  { icon: Lock, title: 'CRA 2017', text: 'Regulated bureau data under strict Credit Reporting Act controls.' },
+  { icon: FileCheck2, title: 'ISO / SOC 2', text: 'Audited controls, encryption everywhere, in-region hosting.' },
 ]
 
+/* ── Sticky showcase ─────────────────────────────────────────── */
+interface ShowcaseStep {
+  index: string
+  title: string
+  text: string
+}
+
+function Showcase({
+  eyebrow,
+  title,
+  intro,
+  steps,
+  visual,
+  flip = false,
+}: {
+  eyebrow: string
+  title: string
+  intro: string
+  steps: ShowcaseStep[]
+  visual: ReactNode
+  flip?: boolean
+}) {
+  const [active, setActive] = useState(0)
+
+  return (
+    <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-20">
+      <div className={cn('lg:sticky lg:top-32', flip && 'lg:order-2')}>
+        <Reveal>
+          <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2f8cff]">{eyebrow}</p>
+          <h3 className="mt-4 text-balance font-display text-3xl font-semibold leading-[1.05] tracking-[-0.02em] text-white sm:text-5xl">
+            {title}
+          </h3>
+          <p className="mt-5 max-w-lg text-lg font-normal leading-relaxed text-[#86868B]">{intro}</p>
+        </Reveal>
+        <Reveal delay={0.1} className="mt-10">
+          {visual}
+        </Reveal>
+        <div className="mt-6 flex gap-2" aria-hidden="true">
+          {steps.map((s, i) => (
+            <span
+              key={s.index}
+              className={cn('h-1 flex-1 rounded-full transition-colors duration-300', i === active ? 'bg-[#0066CC]' : 'bg-white/10')}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div className={cn('flex flex-col', flip && 'lg:order-1')}>
+        {steps.map((s, i) => (
+          <motion.div
+            key={s.index}
+            onViewportEnter={() => setActive(i)}
+            viewport={{ amount: 0.6 }}
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: EASE }}
+            className="flex min-h-[32vh] flex-col justify-center border-t border-white/10 py-10 first:border-t-0 first:pt-0 lg:min-h-[38vh]"
+          >
+            <p className={cn('font-display text-sm font-semibold tracking-[0.2em]', i === active ? 'text-[#2f8cff]' : 'text-white/30')}>
+              {s.index}
+            </p>
+            <h4 className={cn('mt-3 font-display text-2xl font-semibold tracking-tight transition-colors sm:text-3xl', i === active ? 'text-white' : 'text-white/40')}>
+              {s.title}
+            </h4>
+            <p className="mt-3 max-w-md leading-relaxed text-[#86868B]">{s.text}</p>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+const SCORE_STEPS: ShowcaseStep[] = [
+  {
+    index: '01',
+    title: 'Triangulate identity',
+    text: 'NIN and BVN records matched against CAC filings and live POS activity — one resolved entity, one confidence score.',
+  },
+  {
+    index: '02',
+    title: 'Read real cash flow',
+    text: 'POS turnover, seasonality and repayment capacity stream in live. No statements, no paperwork, no guesswork.',
+  },
+  {
+    index: '03',
+    title: 'Score — and explain it',
+    text: 'An explainable 0–850 score with reason codes, affordability signals and a recommended credit limit.',
+  },
+]
+
+const VERIFY_STEPS: ShowcaseStep[] = [
+  {
+    index: '01',
+    title: 'Verify identity',
+    text: 'NIN / BVN validation against authoritative registries — with liveness checks and consent receipts on every lookup.',
+  },
+  {
+    index: '02',
+    title: 'Check credentials',
+    text: 'WAEC and tertiary records, CAC filings, directors and compliance standing, confirmed at source.',
+  },
+  {
+    index: '03',
+    title: 'Screen cross-border',
+    text: 'Corridor checks across Angola, Eswatini, Qatar and US Military HR — sealed into a single auditable report.',
+  },
+]
+
+function ScoreVisual() {
+  return (
+    <div className="rounded-[1.75rem] border border-white/10 bg-neutral-900/60 p-8 backdrop-blur-xl sm:p-10">
+      <div className="flex items-center justify-between">
+        <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-white/50">SME ScoreEngine™</p>
+        <span className="inline-flex items-center gap-1.5 text-[13px] font-medium text-[#059669]">
+          <span className="size-1.5 rounded-full bg-[#059669]" /> Verified
+        </span>
+      </div>
+      <p className="mt-6 font-display text-7xl font-semibold tracking-tight text-white sm:text-8xl">
+        742<span className="text-2xl font-normal text-white/40"> / 850</span>
+      </p>
+      <div className="mt-6 h-2 overflow-hidden rounded-full bg-white/10">
+        <div className="h-full w-[87%] rounded-full bg-[#0066CC]" />
+      </div>
+      <div className="mt-8 flex flex-col gap-3 border-t border-white/10 pt-6 font-mono text-[13px]">
+        {['NIN ✓  ·  BVN ✓  ·  CAC ✓', 'POS velocity · ₦4.2M / 90d'].map((line) => (
+          <p key={line} className="text-white/60">{line}</p>
+        ))}
+        <p className="text-white">Decision · <span className="text-[#2f8cff]">Approve — ₦2.5M limit</span></p>
+      </div>
+    </div>
+  )
+}
+
+function VerifyVisual() {
+  const rows = [
+    ['Identity', 'NIN / BVN + liveness'],
+    ['Education', 'WAEC · confirmed'],
+    ['Registry', 'CAC · RC 1748210 · active'],
+    ['Cross-border', 'Angola · Eswatini · Qatar'],
+  ]
+  return (
+    <div className="rounded-[1.75rem] border border-white/10 bg-neutral-900/60 p-8 backdrop-blur-xl sm:p-10">
+      <div className="flex items-center justify-between">
+        <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-white/50">Verify Africa</p>
+        <span className="inline-flex items-center gap-1.5 text-[13px] font-medium text-[#059669]">
+          <span className="size-1.5 rounded-full bg-[#059669]" /> Sealed
+        </span>
+      </div>
+      <div className="mt-6 flex flex-col">
+        {rows.map(([k, v]) => (
+          <div key={k} className="flex items-center justify-between gap-4 border-t border-white/10 py-4">
+            <p className="text-[15px] font-medium text-white">{k}</p>
+            <p className="inline-flex items-center gap-2 font-mono text-[13px] text-white/60">
+              <CheckCircle2 className="size-4 text-[#059669]" /> {v}
+            </p>
+          </div>
+        ))}
+      </div>
+      <p className="mt-6 font-mono text-[13px] text-white/40">Report sealed · latency 1.4s · audit #VFA-2204</p>
+    </div>
+  )
+}
+
+/* ── Page ────────────────────────────────────────────────────── */
 export function Home() {
   const [activeStage, setActiveStage] = useState(PIPELINE[2].id)
   const [activeAudience, setActiveAudience] = useState(AUDIENCES[0].id)
 
   const stage = PIPELINE.find((s) => s.id === activeStage) ?? PIPELINE[0]
   const audience = AUDIENCES.find((a) => a.id === activeAudience) ?? AUDIENCES[0]
+  const featured = TESTIMONIALS[0]
+  const rest = TESTIMONIALS.slice(1)
 
   return (
-    <div className="relative bg-white">
+    <div className="bg-black">
       {/* ══ HERO ═══════════════════════════════════════════ */}
-      <section className="relative overflow-hidden pb-16 pt-16 sm:pt-24">
+      <section className="relative overflow-hidden pb-20 pt-16 sm:pb-28 sm:pt-24">
         <GridBackdrop />
         <div className="container-enterprise relative">
-          <motion.div variants={staggerParent} initial="hidden" animate="visible" className="mx-auto flex max-w-4xl flex-col items-center text-center">
-            <motion.div variants={fadeUp}>
-             
-            </motion.div>
-            <motion.h1
-              variants={fadeUp}
-              className="mt-6 text-balance font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-6xl"
-            >
-              Pan-African Decision &amp;{' '}
-              <span className="text-blue-700">Data Intelligence</span>{' '}
-              Layer
-            </motion.h1>
-            <motion.p variants={fadeUp} className="mt-6 max-w-2xl text-pretty text-base leading-relaxed text-slate-600 sm:text-lg">
-              Data aggregation, normalisation and triangulated entity resolution — powering explainable risk models and
-              automated decisioning for every lender, corporate and fintech in Africa.
-            </motion.p>
-            <motion.div variants={fadeUp} className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
-              <Button size="lg" asChild>
-                <Link to="/products">
-                  Explore Platform <ArrowRight />
-                </Link>
-              </Button>
-              <Button size="lg" variant="secondary" asChild>
-                <Link to="/about">Contact Enterprise Sales</Link>
-              </Button>
-            </motion.div>
+          <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
+            <Reveal>
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-[13px] font-medium text-white/70">
+                <span className="size-1.5 rounded-full bg-[#059669]" />
+                Live across {SITE.coverage}
+              </span>
+            </Reveal>
+            <Reveal delay={0.08}>
+              <h1 className="mt-8 text-balance font-display text-[2.75rem] font-semibold leading-[1.02] tracking-[-0.03em] text-white sm:text-7xl lg:text-[5.5rem]">
+                Pan-African Data.
+                <br />
+                <span className="text-white/40">Instant Decisioning.</span>
+              </h1>
+            </Reveal>
+            <Reveal delay={0.16}>
+              <p className="mx-auto mt-7 max-w-2xl text-pretty text-lg font-normal leading-relaxed text-[#86868B] sm:text-xl">
+                Aggregation, normalisation and triangulated entity resolution — powering explainable
+                risk models for every lender, corporate and fintech in Africa.
+              </p>
+            </Reveal>
+            <Reveal delay={0.24}>
+              <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row">
+                <Button size="lg" asChild>
+                  <Link to="/products">Explore the platform</Link>
+                </Button>
+                <Button size="lg" variant="secondary" asChild>
+                  <Link to="/about">Talk to sales</Link>
+                </Button>
+              </div>
+            </Reveal>
 
-            {/* Trust strip */}
-            <motion.dl
-              variants={fadeUp}
-              className="mt-14 grid w-full grid-cols-2 gap-px overflow-hidden rounded-2xl border border-slate-200 bg-slate-200 lg:grid-cols-4"
-            >
-              {TRUST_SIGNALS.map((s) => (
-                <div key={s.label} className="flex flex-col items-center gap-1 bg-slate-100 px-6 py-6">
-                  <dt className="order-2 text-xs font-medium uppercase tracking-wider text-slate-500">{s.label}</dt>
-                  <dd className="order-1 font-display text-2xl font-extrabold text-slate-900 sm:text-3xl">{s.value}</dd>
-                  {s.sublabel && <span className="order-3 text-[11px] text-slate-500">{s.sublabel}</span>}
-                </div>
-              ))}
-            </motion.dl>
-          </motion.div>
+            <Reveal delay={0.3} className="w-full">
+              <dl className="mx-auto mt-20 grid w-full max-w-4xl grid-cols-2 gap-8 md:grid-cols-4">
+                {TRUST_SIGNALS.map((s) => (
+                  <div key={s.label} className="flex flex-col items-center gap-1.5 text-center">
+                    <dd className="font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">{s.value}</dd>
+                    <dt className="text-sm text-[#86868B]">{s.label}</dt>
+                  </div>
+                ))}
+              </dl>
+            </Reveal>
+          </div>
         </div>
       </section>
 
-      {/* ══ INTERACTIVE DATA-LAYER PIPELINE ══════════════════ */}
-      <section className="relative border-t border-slate-200/80 py-20">
+      {/* ══ LINE-DRAW PIPELINE ══════════════════════════════ */}
+      <section className="border-t border-white/10 py-28 sm:py-36">
         <div className="container-enterprise">
           <SectionHeading
-            title="From raw feeds to a decision in seconds"
-            description="Tap any stage to inspect it. One pipeline ingests fragmented African data and outputs decision-ready intelligence."
+            eyebrow="The pipeline"
+            title="From raw feeds to a decision in seconds."
+            description="One line. Five stages. Fragmented African data in — decision-ready intelligence out."
           />
 
-          {/* Stage selector — horizontal stepper */}
-          <div className="mt-12 overflow-x-auto pb-2">
-            <div className="mx-auto flex min-w-[720px] max-w-5xl items-stretch gap-0 lg:min-w-0">
-              {PIPELINE.map((s, i) => {
-                const Icon = s.icon
-                const isActive = s.id === activeStage
-                return (
-                  <div key={s.id} className="flex flex-1 items-stretch">
-                    <button
-                      onClick={() => setActiveStage(s.id)}
-                      aria-pressed={isActive}
-                      className={cn(
-                        'group flex flex-1 flex-col items-center gap-2 rounded-2xl border px-3 py-5 text-center transition-all duration-200',
-                        isActive
-                          ? 'border-blue-300 bg-blue-50 shadow-sm'
-                          : 'border-transparent hover:border-slate-300 hover:bg-slate-100',
-                      )}
-                    >
-                      <span
-                        className={cn(
-                          'grid size-11 place-items-center rounded-xl border transition-colors',
-                          isActive ? 'border-blue-300 bg-blue-50 text-blue-700' : 'border-slate-300 bg-slate-100 text-slate-600',
-                        )}
+          <Reveal className="mt-16 sm:mt-20">
+            <div className="overflow-x-auto pb-2">
+              <div className="relative min-w-[680px] px-2">
+                <div className="absolute left-10 right-10 top-[5px] h-px bg-white/10" aria-hidden="true" />
+                <motion.div
+                  className="absolute left-10 right-10 top-[5px] h-px origin-left bg-[#0066CC]"
+                  aria-hidden="true"
+                  initial={{ scaleX: 0 }}
+                  whileInView={{ scaleX: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1.6, ease: EASE }}
+                />
+                <div className="relative grid grid-cols-5">
+                  {PIPELINE.map((s) => {
+                    const isActive = s.id === activeStage
+                    return (
+                      <button
+                        key={s.id}
+                        onClick={() => setActiveStage(s.id)}
+                        aria-pressed={isActive}
+                        className="group flex flex-col items-center gap-4 px-2 text-center"
                       >
-                        <Icon className="size-5" />
-                      </span>
-                      <span className="font-display text-[11px] font-bold tracking-widest text-slate-500">{s.step}</span>
-                      <span className={cn('text-[13px] font-semibold leading-tight', isActive ? 'text-slate-900' : 'text-slate-600')}>
-                        {s.title}
-                      </span>
-                    </button>
-                    {i < PIPELINE.length - 1 && (
-                      <div className="flex items-center px-1" aria-hidden="true">
-                        <ArrowRight className={cn('size-4 shrink-0', isActive ? 'text-blue-600' : 'text-slate-700')} />
-                      </div>
-                    )}
-                  </div>
-                )
-              })}
+                        <span
+                          className={cn(
+                            'size-3 rounded-full transition-all duration-300',
+                            isActive ? 'bg-[#0066CC] ring-4 ring-[#0066CC]/25' : 'bg-white/20 group-hover:bg-white/40',
+                          )}
+                        />
+                        <span>
+                          <span className="block font-display text-xs font-semibold tracking-[0.2em] text-white/30">{s.step}</span>
+                          <span className={cn('mt-1 block text-sm font-semibold', isActive ? 'text-white' : 'text-white/50')}>
+                            {s.short}
+                          </span>
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
             </div>
-          </div>
+          </Reveal>
 
-          {/* Stage detail panel */}
-          <div className="mx-auto mt-6 max-w-5xl">
+          <div className="mx-auto mt-14 max-w-5xl">
             <AnimatePresence mode="wait">
               <motion.div
                 key={stage.id}
-                initial={{ opacity: 0, y: 12 }}
+                initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.25 }}
-                className="grid gap-8 rounded-3xl border border-slate-200 bg-slate-50 p-8 sm:p-10 md:grid-cols-[1.2fr_1fr]"
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.35, ease: EASE }}
+                className="grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16"
               >
                 <div>
-                  
-                  <h3 className="mt-4 font-display text-2xl font-bold text-slate-900">{stage.title}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-slate-600 sm:text-[15px]">{stage.description}</p>
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    {stage.inputs.map((input) => (
-                      <span
-                        key={input}
-                        className="inline-flex items-center gap-1.5 rounded-md border border-slate-300 bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600"
-                      >
-                        <CheckCircle2 className="size-3.5 text-blue-700" /> {input}
-                      </span>
-                    ))}
-                  </div>
+                  <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2f8cff]">
+                    Stage {stage.step} · {stage.short}
+                  </p>
+                  <h3 className="mt-4 font-display text-3xl font-semibold tracking-tight text-white">{stage.title}</h3>
+                  <p className="mt-4 text-lg font-normal leading-relaxed text-[#86868B]">{stage.description}</p>
                 </div>
-                {/* Live mini-visual: resolved entity */}
-                <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-5">
-                  <div className="flex items-center justify-between">
-                    <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-slate-500">
-                      <ScanLine className="size-4 text-blue-600" /> Live resolution preview
-                    </span>
-                    <span className="inline-flex items-center gap-1 rounded-md bg-blue-50 px-2.5 py-1 text-[11px] font-bold text-blue-700">
-                      <span className="size-1.5 animate-pulse rounded-md bg-blue-600" /> 1.8s
-                    </span>
-                  </div>
-                  <div className="grid gap-2 font-mono text-[11px]">
-                    {['BVN ✓  •  NIN ✓  •  CAC ✓', 'POS velocity: ₦4.2M / 90d', 'SME ScoreEngine™: 742 — Prime', 'TradeGuard™: Low exposure'].map((line) => (
-                      <div key={line} className="rounded-lg border border-slate-200 bg-slate-100 px-3 py-2 text-slate-600">
-                        {line}
-                      </div>
-                    ))}
-                  </div>
-                  <div className="mt-1 flex items-center gap-2 rounded-xl bg-blue-50 px-4 py-3">
-                    <Sparkles className="size-4 shrink-0 text-blue-700" />
-                    <p className="text-xs font-semibold text-slate-900">
-                      Decision: <span className="text-blue-700">APPROVE — ₦2.5M limit</span> · fully explainable
+                <div className="flex flex-col justify-center">
+                  {stage.inputs.map((input) => (
+                    <p key={input} className="flex items-center gap-3 border-t border-white/10 py-3.5 text-[15px] text-white/80 last:border-b">
+                      <CheckCircle2 className="size-4 shrink-0 text-[#059669]" /> {input}
                     </p>
-                  </div>
+                  ))}
                 </div>
               </motion.div>
             </AnimatePresence>
-
-            {/* Output row */}
-            <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              {OUTPUT_SEGMENTS.map((o) => (
-                <div
-                  key={o.label}
-                  className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-4 transition-colors hover:border-blue-300"
-                >
-                  <span className="grid size-10 shrink-0 place-items-center rounded-xl border border-slate-300 bg-slate-100">
-                    <o.icon className="size-4.5 text-blue-600" />
-                  </span>
-                  <span>
-                    <span className="block text-[13px] font-bold text-slate-900">{o.label}</span>
-                    <span className="block text-xs text-slate-500">{o.text}</span>
-                  </span>
-                </div>
-              ))}
-            </div>
-            <p className="mt-4 text-center text-xs text-slate-500">
-              Output layer serves Financial Institutions · Corporates · Fintechs · SMEs through one unified gateway.
-            </p>
           </div>
         </div>
       </section>
 
-      {/* ══ AUDIENCE FOCUS GRID (TABS) ═══════════════════════ */}
-      <section className="border-y border-slate-200/80 bg-slate-50 py-20">
+      {/* ══ STICKY SHOWCASES ═══════════════════════════════ */}
+      <section className="border-t border-white/10 py-28 sm:py-36">
+        <div className="container-enterprise flex flex-col gap-28 sm:gap-36">
+          <Showcase
+            eyebrow="SME DataHub™"
+            title="A credit score for the invisible."
+            intro="Closing the $32B SME credit gap — triangulated identity, live cash flow, one explainable score."
+            steps={SCORE_STEPS}
+            visual={<ScoreVisual />}
+          />
+          <Showcase
+            flip
+            eyebrow="Verify Africa"
+            title="Every check. One report."
+            intro="Identity, credentials and cross-border screening — sealed, auditable, delivered in seconds."
+            steps={VERIFY_STEPS}
+            visual={<VerifyVisual />}
+          />
+        </div>
+      </section>
+
+      {/* ══ AUDIENCES ══════════════════════════════════════ */}
+      <section className="border-t border-white/10 bg-[#0B0F17] py-28 sm:py-36">
         <div className="container-enterprise">
           <SectionHeading
-            title="One layer, four tailored value propositions"
+            eyebrow="Who it's for"
+            title="One layer. Four outcomes."
             description="Select your segment to see exactly how MiCA-DATA plugs into your stack."
-            variant="trust"
           />
 
-          <div className="mx-auto mt-10 flex max-w-4xl flex-wrap justify-center gap-2" role="tablist" aria-label="Target audiences">
-            {AUDIENCES.map((a) => (
-              <button
-                key={a.id}
-                role="tab"
-                aria-selected={a.id === activeAudience}
-                onClick={() => setActiveAudience(a.id)}
-                className={cn(
-                  'inline-flex items-center gap-2 rounded-md border px-4 py-2.5 text-[13px] font-semibold transition-all',
-                  a.id === activeAudience
-                    ? 'border-blue-300 bg-blue-50 text-blue-700 shadow-sm'
-                    : 'border-slate-300 bg-slate-100 text-slate-600 hover:border-blue-300 hover:text-blue-700',
-                )}
-              >
-                <a.icon className="size-4" /> {a.label}
-              </button>
-            ))}
-          </div>
-
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={audience.id}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.25 }}
-              className="mx-auto mt-8 grid max-w-5xl gap-6 rounded-3xl border border-slate-200 bg-slate-50 p-8 sm:p-10 md:grid-cols-[1.4fr_1fr]"
-            >
-              <div>
-                <h3 className="text-balance font-display text-xl font-bold text-slate-900 sm:text-2xl">{audience.headline}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-slate-600 sm:text-[15px]">{audience.value}</p>
-                <ul className="mt-5 grid gap-2.5">
-                  {audience.bullets.map((b) => (
-                    <li key={b} className="inline-flex items-start gap-2 text-sm text-slate-600">
-                      <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-blue-700" /> {b}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  to={audience.ctaHref}
-                  className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-800"
+          <Reveal className="mt-12 flex justify-center">
+            <div className="inline-flex max-w-full flex-wrap justify-center gap-1 rounded-full border border-white/10 bg-white/5 p-1.5" role="tablist" aria-label="Target audiences">
+              {AUDIENCES.map((a) => (
+                <button
+                  key={a.id}
+                  role="tab"
+                  aria-selected={a.id === activeAudience}
+                  onClick={() => setActiveAudience(a.id)}
+                  className={cn(
+                    'rounded-full px-5 py-2.5 text-sm font-semibold transition-colors',
+                    a.id === activeAudience ? 'bg-white text-black' : 'text-white/60 hover:text-white',
+                  )}
                 >
-                  {audience.cta} <ArrowUpRight className="size-4" />
-                </Link>
-              </div>
-              <div className="flex flex-col justify-center gap-2 rounded-2xl border border-slate-200 bg-blue-50 p-8 text-center">
-                <span className="font-display text-5xl font-extrabold text-slate-900">{audience.metric}</span>
-                <span className="text-sm text-slate-600">{audience.metricLabel}</span>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </section>
-
-      {/* ══ WHATSAPP BOT BANNER ══════════════════════════════ */}
-      <section className="py-20">
-        <div className="container-enterprise">
-          <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-blue-50 p-8 sm:p-12 lg:p-14">
-            <GridBackdrop className="opacity-60" />
-            <div className="relative grid items-center gap-10 lg:grid-cols-2">
-              <div>
-               
-                <h2 className="mt-5 text-balance font-display text-3xl font-bold leading-tight text-slate-900 sm:text-4xl">
-                  Cash flow, risk scores &amp; trade limits — inside WhatsApp.
-                </h2>
-                <p className="mt-4 max-w-lg text-sm leading-relaxed text-slate-600 sm:text-base">
-                  Small business owners connect POS and bank feeds once. MiCA&apos;s WhatsApp bot then delivers real-time
-                  cash-flow summaries, SME ScoreEngine™ scores and TradeGuard™ trade-credit limits — no app download, no
-                  paperwork.
-                </p>
-                <ul className="mt-6 grid gap-2.5">
-                  {[
-                    'Daily cash-flow pulse: inflows, outflows, runway',
-                    'Live risk score + what moves it up or down',
-                    'One-tap trade-credit limit shareable with any supplier or lender',
-                  ].map((f) => (
-                    <li key={f} className="inline-flex items-start gap-2 text-sm text-slate-700">
-                      <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-blue-600" /> {f}
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-                  <Button variant="trust" size="lg" asChild>
-                    <Link to="/about">
-                      <Bot /> Try the WhatsApp demo
-                    </Link>
-                  </Button>
-                  <Button variant="secondary" size="lg" asChild>
-                    <Link to="/products">How scoring works</Link>
-                  </Button>
-                </div>
-              </div>
-
-              {/* Phone mock */}
-              <div className="mx-auto w-full max-w-[340px]">
-                <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                  <div className="flex items-center gap-3 bg-blue-600 px-4 py-3">
-                    <span className="grid size-9 place-items-center rounded-md bg-white font-display text-xs font-bold text-blue-700">
-                      M
-                    </span>
-                    <span>
-                      <span className="block text-sm font-bold text-white">MiCA Assistant</span>
-                      <span className="block text-[11px] text-blue-100">online · Financial Intelligence</span>
-                    </span>
-                  </div>
-                  <div className="flex flex-col gap-2.5 bg-slate-50 p-4 text-[13px] leading-snug">
-                    <div className="max-w-[85%] self-start rounded-lg rounded-tl-sm border border-slate-200 bg-white px-3 py-2 text-slate-700">
-                      👋 Morning Ada! Your 7-day cash-flow pulse is ready.
-                    </div>
-                    <div className="max-w-[90%] self-start rounded-lg rounded-tl-sm border border-slate-200 bg-white px-3 py-2 text-slate-700">
-                      Inflows <b className="text-blue-700">₦1.84M</b> · Outflows ₦1.21M
-                      <br />
-                      SME Score <b className="text-blue-700">742 (Prime ↑18)</b>
-                      <br />
-                      Trade limit <b className="text-blue-700">₦2.5M</b> with 3 suppliers
-                    </div>
-                    <div className="max-w-[70%] self-end rounded-lg rounded-tr-sm bg-blue-600 px-3 py-2 text-white">
-                      Share my limit with Dangote Depot?
-                    </div>
-                    <div className="max-w-[85%] self-start rounded-lg rounded-tl-sm border border-slate-200 bg-white px-3 py-2 text-slate-700">
-                      ✅ Verified profile sent. Approval odds: <b>High (91%)</b>. Anything else? Try “why did my score move?”
-                    </div>
-                    <div className="mt-1 flex items-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-2.5 text-slate-500">
-                      <MessageCircle className="size-4" />
-                      <span className="text-xs">Ask about cash flow, score, limits…</span>
-                    </div>
-                  </div>
-                </div>
-                <p className="mt-3 text-center text-[11px] uppercase tracking-[0.18em] text-slate-500">
-                  <Banknote className="mr-1 inline size-3.5" /> POS + Bank feeds → live score
-                </p>
-              </div>
+                  {a.label}
+                </button>
+              ))}
             </div>
-          </div>
-        </div>
-      </section>
+          </Reveal>
 
-      {/* ══ TRUST & COMPLIANCE BAR ═══════════════════════════ */}
-      <section className="border-t border-slate-200/80 bg-slate-50 py-14">
-        <div className="container-enterprise">
-          <div className="flex flex-col items-center gap-2 text-center">
-            
-            <h2 className="font-display text-xl font-bold text-slate-900 sm:text-2xl">Regulated data, handled like it.</h2>
-          </div>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {COMPLIANCE.map((c) => (
-              <Card key={c.title} className="border-slate-200 bg-white">
-                <CardContent className="flex items-start gap-4 p-6">
-                  <span className="grid size-11 shrink-0 place-items-center rounded-xl border border-blue-200 bg-blue-50">
-                    <c.icon className="size-5 text-blue-700" />
-                  </span>
-                  <span>
-                    <span className="block text-sm font-bold text-slate-900">{c.title}</span>
-                    <span className="mt-1 block text-[13px] leading-relaxed text-slate-600">{c.text}</span>
-                  </span>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══ SOCIAL PROOF + CTA ═══════════════════════════════ */}
-      <section className="py-20">
-        <div className="container-enterprise">
-          <SectionHeading title="Built for risk, compliance and growth teams" variant="neutral" />
-          <div className="mt-12 grid gap-5 md:grid-cols-3">
-            {TESTIMONIALS.map((t, i) => (
-              <motion.figure
-                key={t.name}
-                variants={fadeUp}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                custom={i}
-                className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-slate-100 p-7"
+          <div className="mx-auto mt-14 max-w-5xl">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={audience.id}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.35, ease: EASE }}
+                className="grid items-center gap-10 lg:grid-cols-[1.4fr_1fr] lg:gap-16"
               >
-                <blockquote className="text-sm leading-relaxed text-slate-600">&ldquo;{t.quote}&rdquo;</blockquote>
-                <figcaption className="mt-auto flex items-center gap-3">
-                  <span className="grid size-10 place-items-center rounded-md bg-blue-600 font-display text-xs font-bold text-white">
-                    {t.initials}
-                  </span>
-                  <span>
-                    <span className="block text-sm font-semibold text-slate-900">{t.name}</span>
-                    <span className="block text-xs text-slate-500">
-                      {t.role} · {t.company}
-                    </span>
-                  </span>
-                </figcaption>
-              </motion.figure>
-            ))}
+                <div>
+                  <h3 className="text-balance font-display text-2xl font-semibold tracking-tight text-white sm:text-4xl">
+                    {audience.headline}
+                  </h3>
+                  <p className="mt-5 text-lg font-normal leading-relaxed text-[#86868B]">{audience.value}</p>
+                  <div className="mt-7 flex flex-col">
+                    {audience.bullets.map((b) => (
+                      <p key={b} className="border-t border-white/10 py-3 text-[15px] text-white/80 last:border-b">
+                        {b}
+                      </p>
+                    ))}
+                  </div>
+                  <Link
+                    to={audience.ctaHref}
+                    className="mt-7 inline-flex items-center gap-1.5 text-[15px] font-semibold text-[#2f8cff] hover:text-white"
+                  >
+                    {audience.cta} <ArrowRight className="size-4" />
+                  </Link>
+                </div>
+                <div className="text-center lg:text-left">
+                  <p className="font-display text-6xl font-semibold tracking-tight text-white sm:text-7xl">{audience.metric}</p>
+                  <p className="mt-3 text-[#86868B]">{audience.metricLabel}</p>
+                </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
+        </div>
+      </section>
 
-          <div className="relative mt-14 overflow-hidden rounded-3xl border border-slate-200 bg-blue-50 p-10 text-center sm:p-14">
-            <Layers className="mx-auto size-8 text-blue-600" />
-            <h3 className="mx-auto mt-4 max-w-2xl text-balance font-display text-2xl font-bold text-slate-900 sm:text-4xl">
-              Unify your credit, identity and business data today
-            </h3>
-            <p className="mx-auto mt-3 max-w-xl text-sm text-slate-600 sm:text-base">
-              Start with a 30-day proof-of-value against your own portfolio. No rip-and-replace required.
+      {/* ══ WHATSAPP ═══════════════════════════════════════ */}
+      <section className="border-t border-white/10 py-28 sm:py-36">
+        <div className="container-enterprise grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
+          <Reveal>
+            <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2f8cff]">WhatsApp Financial Intelligence</p>
+            <h2 className="mt-4 text-balance font-display text-4xl font-semibold leading-[1.05] tracking-[-0.02em] text-white sm:text-5xl">
+              Cash flow, scores and limits — inside WhatsApp.
+            </h2>
+            <p className="mt-5 max-w-lg text-lg font-normal leading-relaxed text-[#86868B]">
+              Small businesses connect POS and bank feeds once. MiCA&apos;s bot then delivers cash-flow
+              summaries, live scores and trade-credit limits — no app, no paperwork.
             </p>
-            <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <div className="mt-8 flex flex-col">
+              {[
+                'Daily cash-flow pulse: inflows, outflows, runway',
+                'Live risk score — and what moves it',
+                'One-tap limits, shareable with any lender',
+              ].map((f) => (
+                <p key={f} className="flex items-center gap-3 border-t border-white/10 py-3.5 text-[15px] text-white/80 last:border-b">
+                  <CheckCircle2 className="size-4 shrink-0 text-[#059669]" /> {f}
+                </p>
+              ))}
+            </div>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <Button size="lg" asChild>
-                <Link to="/products">
-                  Explore Platform <ArrowRight />
-                </Link>
+                <Link to="/about">Try the WhatsApp demo</Link>
               </Button>
               <Button size="lg" variant="secondary" asChild>
-                <Link to="/about">Contact Enterprise Sales</Link>
+                <Link to="/products">How scoring works</Link>
               </Button>
             </div>
-            <p className="mt-5 flex items-center justify-center gap-1.5 text-xs text-slate-500">
-              <Network className="size-3.5" /> {SITE.coverage} · NDPA 2023 · CRA 2017 · ISO/SOC 2
-            </p>
+          </Reveal>
+
+          <Reveal delay={0.1}>
+            <div className="mx-auto w-full max-w-[340px] overflow-hidden rounded-[2rem] border border-white/10 bg-neutral-900/70 backdrop-blur-xl">
+              <div className="flex items-center gap-3 border-b border-white/10 bg-white/5 px-5 py-4">
+                <span className="grid size-9 place-items-center rounded-full bg-white font-display text-xs font-semibold text-black">
+                  M
+                </span>
+                <span>
+                  <span className="block text-sm font-semibold text-white">MiCA Assistant</span>
+                  <span className="block text-xs text-white/50">online · Financial Intelligence</span>
+                </span>
+              </div>
+              <div className="flex flex-col gap-2.5 p-4 text-[13px] leading-snug">
+                <div className="max-w-[85%] self-start rounded-2xl rounded-tl-md bg-white/10 px-3.5 py-2.5 text-white/85">
+                  👋 Morning Ada! Your 7-day cash-flow pulse is ready.
+                </div>
+                <div className="max-w-[90%] self-start rounded-2xl rounded-tl-md bg-white/10 px-3.5 py-2.5 text-white/85">
+                  Inflows <b className="text-white">₦1.84M</b> · Outflows ₦1.21M
+                  <br />
+                  SME Score <b className="text-white">742 (Prime ↑18)</b>
+                  <br />
+                  Trade limit <b className="text-white">₦2.5M</b> · 3 suppliers
+                </div>
+                <div className="max-w-[70%] self-end rounded-2xl rounded-tr-md bg-[#0066CC] px-3.5 py-2.5 text-white">
+                  Share my limit with Dangote Depot?
+                </div>
+                <div className="max-w-[85%] self-start rounded-2xl rounded-tl-md bg-white/10 px-3.5 py-2.5 text-white/85">
+                  ✅ Verified profile sent. Approval odds: <b className="text-white">High (91%)</b>
+                </div>
+                <div className="mt-1 flex items-center gap-2 rounded-full border border-white/10 px-4 py-2.5 text-white/40">
+                  <MessageCircle className="size-4" />
+                  <span className="text-xs">Ask about cash flow, score, limits…</span>
+                </div>
+              </div>
+            </div>
+            <p className="mt-5 text-center text-xs tracking-wide text-white/30">POS + bank feeds → live score</p>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ══ COMPLIANCE ═════════════════════════════════════ */}
+      <section className="border-t border-white/10 py-24 sm:py-28">
+        <div className="container-enterprise">
+          <Reveal className="mx-auto max-w-2xl text-center">
+            <h2 className="font-display text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+              Regulated data, handled like it.
+            </h2>
+          </Reveal>
+          <div className="mx-auto mt-12 grid max-w-5xl gap-10 md:grid-cols-3">
+            {COMPLIANCE.map((c, i) => (
+              <Reveal key={c.title} delay={i * 0.08}>
+                <div className="border-t border-white/10 pt-6">
+                  <c.icon className="size-5 text-white/60" />
+                  <p className="mt-4 text-[15px] font-semibold text-white">{c.title}</p>
+                  <p className="mt-1.5 text-sm leading-relaxed text-[#86868B]">{c.text}</p>
+                </div>
+              </Reveal>
+            ))}
           </div>
+        </div>
+      </section>
+
+      {/* ══ PROOF ══════════════════════════════════════════ */}
+      <section className="border-t border-white/10 bg-[#0B0F17] py-28 sm:py-36">
+        <div className="container-enterprise">
+          <Reveal className="mx-auto max-w-4xl text-center">
+            <blockquote className="text-balance font-display text-2xl font-medium leading-snug tracking-tight text-white sm:text-4xl">
+              &ldquo;{featured.quote}&rdquo;
+            </blockquote>
+            <p className="mt-6 text-[15px] text-[#86868B]">
+              {featured.name} · {featured.role}, {featured.company}
+            </p>
+          </Reveal>
+          <div className="mx-auto mt-16 grid max-w-5xl gap-10 sm:grid-cols-2">
+            {rest.map((t, i) => (
+              <Reveal key={t.name} delay={i * 0.08}>
+                <figure className="border-t border-white/10 pt-6">
+                  <blockquote className="text-[15px] leading-relaxed text-white/70">&ldquo;{t.quote}&rdquo;</blockquote>
+                  <figcaption className="mt-4 text-sm text-[#86868B]">
+                    {t.name} · {t.role}, {t.company}
+                  </figcaption>
+                </figure>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══ CTA ════════════════════════════════════════════ */}
+      <section className="border-t border-white/10 py-28 sm:py-36">
+        <div className="container-enterprise mx-auto flex max-w-3xl flex-col items-center text-center">
+          <Reveal>
+            <h2 className="text-balance font-display text-4xl font-semibold leading-[1.03] tracking-[-0.02em] text-white sm:text-6xl">
+              One API.
+              <br />
+              Every decision.
+            </h2>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <p className="mx-auto mt-6 max-w-xl text-lg font-normal text-[#86868B]">
+              Start with a 30-day proof-of-value against your own portfolio. No rip-and-replace required.
+            </p>
+          </Reveal>
+          <Reveal delay={0.18}>
+            <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row">
+              <Button size="lg" asChild>
+                <Link to="/products">Explore the platform</Link>
+              </Button>
+              <Button size="lg" variant="secondary" asChild>
+                <Link to="/about">Contact sales</Link>
+              </Button>
+            </div>
+          </Reveal>
+          <Reveal delay={0.24}>
+            <p className="mt-8 inline-flex items-center gap-2 text-[13px] text-white/30">
+              <ScanLine className="size-4" /> {SITE.coverage} · NDPA 2023 · CRA 2017 · ISO/SOC 2
+            </p>
+          </Reveal>
         </div>
       </section>
     </div>

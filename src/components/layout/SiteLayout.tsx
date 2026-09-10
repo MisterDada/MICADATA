@@ -10,7 +10,7 @@ const TITLES: Record<string, string> = {
   '/about': 'About Us — MiCA-DATA',
 }
 
-/** Global layout wrapper: fixed nav, routed content, footer. */
+/** Global layout wrapper: floating pill nav, routed content, footer. */
 export function SiteLayout() {
   const { pathname } = useLocation()
 
@@ -19,9 +19,9 @@ export function SiteLayout() {
   }, [pathname])
 
   return (
-    <div className="flex min-h-screen flex-col bg-white text-slate-900">
+    <div className="flex min-h-screen flex-col bg-black text-[#F5F5F7]">
       <Navbar />
-      <main className="flex-1 pt-[72px]">
+      <main className="flex-1 pt-28 sm:pt-32">
         <Outlet />
       </main>
       <Footer />

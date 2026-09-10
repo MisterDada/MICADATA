@@ -1,29 +1,32 @@
-import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import { fadeUp } from '@/lib/motion'
+import { Reveal } from '@/components/shared/Reveal'
 
 interface SectionHeadingProps {
+  eyebrow?: string
   title: string
   description?: string
   align?: 'center' | 'left'
-  variant?: 'default' | 'trust' | 'neutral'
   className?: string
 }
 
-export function SectionHeading({ title, description, align = 'center', variant = 'default', className }: SectionHeadingProps) {
+export function SectionHeading({ eyebrow, title, description, align = 'center', className }: SectionHeadingProps) {
   return (
-    <motion.div
-      variants={fadeUp}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: '-80px' }}
-      className={cn('flex flex-col gap-4', align === 'center' ? 'items-center text-center' : 'items-start text-left', className)}
+    <Reveal
+      className={cn(
+        'flex flex-col gap-5',
+        align === 'center' ? 'items-center text-center' : 'items-start text-left',
+        className,
+      )}
     >
-     
-      <h2 className="max-w-3xl text-balance font-display text-3xl font-bold leading-[1.1] tracking-tight text-slate-900 sm:text-4xl lg:text-[2.75rem]">
+      {eyebrow && (
+        <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2f8cff]">{eyebrow}</p>
+      )}
+      <h2 className="max-w-3xl text-balance font-display text-4xl font-semibold leading-[1.05] tracking-[-0.02em] text-[#F5F5F7] sm:text-5xl">
         {title}
       </h2>
-      {description && <p className="max-w-2xl text-pretty text-[15px] leading-relaxed text-slate-600">{description}</p>}
-    </motion.div>
+      {description && (
+        <p className="max-w-2xl text-pretty text-lg font-normal leading-relaxed text-[#86868B]">{description}</p>
+      )}
+    </Reveal>
   )
 }
